@@ -1,0 +1,16 @@
+{
+  "name": "Gruvbox Dark",
+  "colors": {
+    "background": "#282828",
+    "surface": "#3c3836",
+    "surfaceAlt": "#504945",
+    "border": "#665c54",
+    "text": "#ebdbb2",
+    "textMuted": "#a89984",
+    "accent": "#fe8019",
+    "onAccent": "#282828",
+    "success": "#b8bb26",
+    "warning": "#fabd2f",
+    "error": "#fb4934"
+  }
+}

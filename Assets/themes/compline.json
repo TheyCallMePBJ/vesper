@@ -1,0 +1,18 @@
+{
+  "name": "Compline",
+  "author": "Joshua Blais",
+  "source": "https://github.com/joshuablais/compline",
+  "colors": {
+    "background": "#1a1d21",
+    "surface": "#282c34",
+    "surfaceAlt": "#3d424a",
+    "border": "#515761",
+    "text": "#f0efeb",
+    "textMuted": "#8b919a",
+    "accent": "#d4ccb4",
+    "onAccent": "#1a1d21",
+    "success": "#b8c4b8",
+    "warning": "#d4ccb4",
+    "error": "#cdacac"
+  }
+}

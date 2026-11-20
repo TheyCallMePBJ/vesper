@@ -1,0 +1,18 @@
+{
+  "name": "Lauds",
+  "author": "Joshua Blais",
+  "source": "https://github.com/joshuablais/compline",
+  "colors": {
+    "background": "#f0efeb",
+    "surface": "#e5e3e0",
+    "surfaceAlt": "#d8d6d3",
+    "border": "#b8b5b0",
+    "text": "#1a1d21",
+    "textMuted": "#7d7a75",
+    "accent": "#7a6d5a",
+    "onAccent": "#f0efeb",
+    "success": "#5a6b5a",
+    "warning": "#8b7e52",
+    "error": "#8b6666"
+  }
+}
