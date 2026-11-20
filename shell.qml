@@ -1,5 +1,6 @@
 import Quickshell
 import Quickshell.Wayland
+import Quickshell.Hyprland
 import QtQuick
 
 ShellRoot {
@@ -25,6 +26,36 @@ ShellRoot {
                 SystemClock {
                     id: sysClock
                     precision: SystemClock.Seconds
+                }
+
+                // Workspace indicators (top left)
+                Row {
+                    anchors.left: parent.left
+                    anchors.leftMargin: 8
+                    anchors.verticalCenter: parent.verticalCenter
+                    spacing: 10
+
+                    Repeater {
+                        model: Hyprland.workspaces
+
+                        Text {
+                            required property HyprlandWorkspace modelData
+                            readonly property bool isFocused: Hyprland.focusedWorkspace?.id === modelData.id
+
+                            // Skip special (scratchpad) workspaces, which have negative ids
+                            visible: modelData.id > 0
+                            text: modelData.name
+                            color: isFocused ? Qt.rgba(0.94, 0.94, 0.92, 1) : Qt.rgba(0.94, 0.94, 0.92, 0.5)
+                            font.pixelSize: 12
+                            font.bold: isFocused
+
+                            MouseArea {
+                                anchors.fill: parent
+                                cursorShape: Qt.PointingHandCursor
+                                onClicked: modelData.activate()
+                            }
+                        }
+                    }
                 }
 
                 // Centered time display
