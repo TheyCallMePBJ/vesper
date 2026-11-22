@@ -326,7 +326,7 @@ BarPanel {
                     Layout.fillWidth: true
                     text: row.title
                     elide: Text.ElideRight
-                    font.bold: row.highlighted
+                    font.weight: row.highlighted ? Font.Bold : Style.fontWeight
                 }
                 VText {
                     Layout.fillWidth: true

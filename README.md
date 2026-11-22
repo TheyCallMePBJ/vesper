@@ -50,7 +50,7 @@ Vesper is inspired by noctalia-shell v4: a bar made of widgets you arrange from 
 - **Session menu**: suspend, log out, reboot, shut down (and lock, if you set a lock command), with keyboard shortcuts and a countdown before destructive actions.
 - **Settings window** for everything above. Changes apply immediately and are saved to a plain JSON file, which also reloads live if you edit it by hand.
 - **Themes**: Catppuccin Mocha and Latte, Compline and Lauds, Gruvbox Dark, Nord, Rosé Pine and Tokyo Night built in, plus your own.
-- **Configurable bar actions**: what scrolling, right-clicking and middle-clicking empty bar space does.
+- **Configurable bar actions**: what scrolling, right-clicking and middle-clicking empty bar space does. Scrolling can step once per wheel notch or once per swipe.
 - **IPC** commands for keybinds.
 
 ## Requirements

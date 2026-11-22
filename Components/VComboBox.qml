@@ -73,7 +73,7 @@ T.ComboBox {
         contentItem: VText {
             text: item.modelData.label
             color: item.index === root.currentIndex ? Theme.accent : Theme.text
-            font.bold: item.index === root.currentIndex
+            font.weight: item.index === root.currentIndex ? Font.Bold : Style.fontWeight
             elide: Text.ElideRight
         }
         background: Rectangle {

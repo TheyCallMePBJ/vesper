@@ -26,7 +26,7 @@ BarWidget {
         id: grid
         anchors.centerIn: parent
         vertical: root.vertical
-        spacing: Math.round(root.fontSize * 0.8)
+        spacing: Math.round(root.fontSize * 1.05)
 
         Repeater {
             model: Hyprland.workspaces
@@ -41,7 +41,7 @@ BarWidget {
                 text: root.options.labelMode === "name" ? modelData.name : (modelData.id < 0 ? modelData.name.replace(/^special:/, "") : modelData.id)
                 color: isFocused ? Theme.accent : (hover.containsMouse ? Theme.text : Theme.textMuted)
                 font.pixelSize: root.fontSize
-                font.bold: isFocused
+                font.weight: isFocused ? Font.Bold : Style.fontWeight
 
                 MouseArea {
                     id: hover

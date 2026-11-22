@@ -99,6 +99,21 @@ ColumnLayout {
         }
 
         SettingsRow {
+            label: "Font weight"
+            description: "For all of Vesper's text. Headings stay bold."
+            VComboBox {
+                options: [
+                    { value: "light", label: "Light" },
+                    { value: "normal", label: "Regular" },
+                    { value: "medium", label: "Medium" },
+                    { value: "demibold", label: "Semibold" }
+                ]
+                value: Settings.appearance.fontWeight || "medium"
+                onChangedByUser: v => Settings.set("appearance.fontWeight", v)
+            }
+        }
+
+        SettingsRow {
             label: "Interface scale"
             description: "Size of this window, the session menu and other panels. The bar has its own size and scale in Bar settings. Applies when you let go."
             VSlider {

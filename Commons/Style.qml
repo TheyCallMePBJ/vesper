@@ -11,6 +11,8 @@ Singleton {
     readonly property real uiScale: Settings.appearance.uiScale > 0 ? Settings.appearance.uiScale : 1
     readonly property string fontFamily: Settings.appearance.fontFamily || Qt.application.font.family
     readonly property string monoFontFamily: Settings.appearance.monoFontFamily || "monospace"
+    // Text weight everywhere (bold text stays bold).
+    readonly property int fontWeight: ({ light: Font.Light, normal: Font.Normal, medium: Font.Medium, demibold: Font.DemiBold })[Settings.appearance.fontWeight] || Font.Medium
 
     readonly property real baseFontSize: 13
 
@@ -28,7 +30,7 @@ Singleton {
 
     // Icon size for bar widgets on a bar of the given font size.
     function barIconSize(fontSize) {
-        return Math.round(fontSize * 1.35);
+        return Math.round(fontSize * 1.25);
     }
 
     readonly property int radius: 6

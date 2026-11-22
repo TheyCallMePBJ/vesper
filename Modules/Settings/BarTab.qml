@@ -146,6 +146,20 @@ ColumnLayout {
         }
 
         SettingsRow {
+            label: "Scroll steps"
+            description: "One step per scroll gesture suits free-spinning or very sensitive wheels and touchpads."
+            enabled: Settings.bar.actions.scroll !== "none"
+            VComboBox {
+                options: [
+                    { value: "notch", label: "Every wheel notch" },
+                    { value: "swipe", label: "One per swipe" }
+                ]
+                value: Settings.bar.actions.scrollMode || "notch"
+                onChangedByUser: v => Settings.set("bar.actions.scrollMode", v)
+            }
+        }
+
+        SettingsRow {
             label: "Reverse scroll direction"
             VToggle {
                 value: Settings.bar.actions.reverseScroll

@@ -173,7 +173,7 @@ BarPanel {
                     VText {
                         Layout.fillWidth: true
                         text: BluetoothService.displayName(device.modelData)
-                        font.bold: device.modelData.connected
+                        font.weight: device.modelData.connected ? Font.Bold : Style.fontWeight
                         elide: Text.ElideRight
                     }
                     VText {

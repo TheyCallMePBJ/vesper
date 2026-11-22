@@ -116,7 +116,7 @@ PanelWindow {
                                 Layout.fillWidth: true
                                 text: tabButton.modelData.label
                                 color: tabButton.selected ? Theme.text : Theme.textMuted
-                                font.bold: tabButton.selected
+                                font.weight: tabButton.selected ? Font.Bold : Style.fontWeight
                             }
                         }
                         HoverHandler { cursorShape: Qt.PointingHandCursor }

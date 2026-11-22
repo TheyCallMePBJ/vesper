@@ -9,14 +9,42 @@ import qs.Commons
 Singleton {
     id: root
 
-    // Wheel deltas arrive in small steps on touchpads; act once per notch.
+    // Wheel deltas arrive in small steps on touchpads; act once per notch
+    // (120 units), or in "swipe" mode once per gesture.
     property real wheelAccumulator: 0
+    // In swipe mode: a step was taken and the gesture hasn't ended yet.
+    property bool swipeUsed: false
+
+    // A gesture ends after this long without scroll events.
+    Timer {
+        id: swipeEnd
+        interval: 250
+        onTriggered: {
+            root.swipeUsed = false;
+            root.wheelAccumulator = 0;
+        }
+    }
 
     function handleWheel(barConfig, angleDelta, screen) {
         const actions = barConfig.actions;
-        wheelAccumulator += angleDelta;
-        if (Math.abs(wheelAccumulator) < 120)
+        if (actions.scroll === "none")
             return;
+
+        if (actions.scrollMode === "swipe") {
+            swipeEnd.restart();
+            if (swipeUsed)
+                return;
+            wheelAccumulator += angleDelta;
+            // A wheel notch is 120; touchpads need a short deliberate swipe.
+            if (Math.abs(wheelAccumulator) < 60)
+                return;
+            swipeUsed = true;
+        } else {
+            wheelAccumulator += angleDelta;
+            if (Math.abs(wheelAccumulator) < 120)
+                return;
+        }
+
         let up = wheelAccumulator > 0;
         wheelAccumulator = 0;
         if (actions.reverseScroll)

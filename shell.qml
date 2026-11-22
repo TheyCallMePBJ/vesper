@@ -1,6 +1,7 @@
 //@ pragma UseQApplication
 import QtQuick
 import Quickshell
+import Quickshell.Wayland
 import qs.Commons
 import qs.Services
 import qs.Modules.Bar
@@ -30,6 +31,34 @@ ShellRoot {
     LazyLoader {
         active: Panels.sessionOpen
         SessionMenu {}
+    }
+
+    // While a bar panel is open, a click on any other screen closes it (the
+    // panel itself only covers its own screen). Bars there still get clicks.
+    Variants {
+        model: Panels.panel !== "" ? Quickshell.screens.filter(s => s !== Panels.panelScreen) : []
+
+        PanelWindow {
+            required property ShellScreen modelData
+            screen: modelData
+            WlrLayershell.namespace: "vesper-panel-dismiss"
+            WlrLayershell.layer: WlrLayer.Top
+            WlrLayershell.keyboardFocus: WlrKeyboardFocus.None
+            exclusionMode: ExclusionMode.Normal
+            anchors {
+                top: true
+                bottom: true
+                left: true
+                right: true
+            }
+            color: "transparent"
+
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.AllButtons
+                onPressed: Panels.closePanel()
+            }
+        }
     }
 
     // Bar panels: at most one is open at a time.

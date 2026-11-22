@@ -35,7 +35,7 @@ BarWidget {
                 Layout.alignment: Qt.AlignCenter
                 text: root.vertical ? modelData.short : modelData.label
                 color: modelData.on ? Theme.accent : Theme.textMuted
-                font.bold: modelData.on
+                font.weight: modelData.on ? Font.Bold : Style.fontWeight
                 font.pixelSize: root.fontSize * (root.vertical ? 0.85 : 0.9)
             }
         }

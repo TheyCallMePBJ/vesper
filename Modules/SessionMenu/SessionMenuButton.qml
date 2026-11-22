@@ -45,7 +45,7 @@ MouseArea {
             Layout.alignment: Qt.AlignHCenter
             text: root.pending ? `${root.action.label} in ${root.remaining}` : root.action.label
             color: root.fg
-            font.bold: root.pending
+            font.weight: root.pending ? Font.Bold : Style.fontWeight
         }
         Rectangle {
             Layout.alignment: Qt.AlignHCenter

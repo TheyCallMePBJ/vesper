@@ -33,6 +33,7 @@ Singleton {
             actions: {
                 scroll: "workspace",  // none | workspace | volume
                 reverseScroll: false,
+                scrollMode: "notch",  // notch: every wheel notch is a step | swipe: one step per scroll gesture
                 rightClick: { action: "settings" },
                 middleClick: { action: "none", command: "" }
             },
@@ -47,6 +48,7 @@ Singleton {
             theme: "nord",
             fontFamily: "",
             monoFontFamily: "",
+            fontWeight: "medium",     // light | normal | medium | demibold
             uiScale: 1.0              // settings window, session menu and other panels
         },
         audio: {

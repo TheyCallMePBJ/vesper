@@ -6,6 +6,7 @@ Text {
     color: Theme.text
     font.family: Style.fontFamily
     font.pixelSize: Style.fontSize
+    font.weight: Style.fontWeight
     renderType: Text.NativeRendering
     verticalAlignment: Text.AlignVCenter
 }

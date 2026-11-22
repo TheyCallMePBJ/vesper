@@ -200,7 +200,7 @@ BarPanel {
                         color: cell.isWeek ? Theme.accent
                              : cell.isToday ? Theme.onAccent
                              : cell.inMonth ? Theme.text : Qt.alpha(Theme.textMuted, 0.6)
-                        font.bold: cell.isToday
+                        font.weight: cell.isToday ? Font.Bold : Style.fontWeight
                         font.pixelSize: cell.isWeek ? Style.fontSize * 0.8 : Style.fontSize
                     }
                 }
