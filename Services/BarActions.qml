@@ -31,9 +31,6 @@ Singleton {
         case "volume":
             AudioService.changeVolume(up ? 1 : -1);
             return;
-        case "brightness":
-            Logger.d("BarActions", `Scroll action "${actions.scroll}" isn't available yet.`);
-            return;
         default:
             Logger.w("BarActions", `Unknown scroll action "${actions.scroll}".`);
         }
@@ -50,6 +47,7 @@ Singleton {
         { value: "none", label: "Nothing" },
         { value: "settings", label: "Open settings" },
         { value: "sessionMenu", label: "Open session menu" },
+        { value: "controlCenter", label: "Open control center" },
         { value: "command", label: "Run a command" }
     ]
 
@@ -70,6 +68,8 @@ Singleton {
             Panels.toggleSession(screen);
             return;
         case "controlCenter":
+            Panels.togglePanel("controlCenter", null, screen);
+            return;
         case "launcher":
             Logger.d("BarActions", `Click action "${clickConfig.action}" isn't available yet.`);
             return;

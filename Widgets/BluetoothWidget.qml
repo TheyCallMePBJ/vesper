@@ -3,9 +3,12 @@ import Quickshell.Bluetooth
 import qs.Commons
 import qs.Components
 
-// Shows Bluetooth state. Left click turns the adapter on/off.
+// Shows Bluetooth state. Left click: Bluetooth panel (or on/off, see the
+// clickAction option). Right click: on/off.
 BarWidget {
     id: root
+
+    panelName: "bluetooth"
 
     readonly property var adapter: Bluetooth.defaultAdapter
     readonly property bool enabled: !!adapter && adapter.enabled
@@ -29,6 +32,16 @@ BarWidget {
         textOnVertical: false
         maxTextWidth: root.fontSize * 12
 
-        onClicked: if (root.adapter) root.adapter.enabled = !root.adapter.enabled
+        active: root.panelOpen
+        acceptedButtons: Qt.LeftButton | Qt.RightButton
+
+        onClicked: mouse => {
+            if (mouse.button === Qt.RightButton || root.options.clickAction === "toggle") {
+                if (root.adapter)
+                    root.adapter.enabled = !root.adapter.enabled;
+            } else {
+                root.togglePanel();
+            }
+        }
     }
 }

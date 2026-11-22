@@ -20,6 +20,12 @@ PanelWindow {
 
     WlrLayershell.namespace: "vesper-bar"
 
+    // Keep awake: any bar's surface can hold the inhibitor.
+    IdleInhibitor {
+        window: root
+        enabled: KeepAwakeService.enabled
+    }
+
     anchors {
         top: root.position !== "bottom"
         bottom: root.position !== "top"

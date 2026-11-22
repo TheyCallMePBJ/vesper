@@ -80,6 +80,30 @@ Singleton {
         calendar: {
             firstDayOfWeek: -1,       // -1 = from locale, 0 = Sunday, 1 = Monday, ... 6 = Saturday
             showWeekNumbers: false
+        },
+        brightness: {
+            step: 5,                  // percent per scroll step / IPC call
+            ddc: true                 // external monitors through ddcutil
+        },
+        nightLight: {
+            enabled: false,           // master switch (needs hyprsunset)
+            temperature: 4000,        // kelvin
+            schedule: false,          // only between `start` and `end` while enabled
+            start: "18:30",
+            end: "06:30"
+        },
+        systemMonitor: {
+            interval: 2,              // seconds between updates
+            diskPath: "/",
+            warningPercent: 80,       // CPU / memory / disk usage colours
+            criticalPercent: 90,
+            warningTemp: 75,          // degrees C
+            criticalTemp: 90
+        },
+        privacy: {
+            // Apps that record audio all the time and shouldn't count (matched
+            // against the PipeWire app or node name, case-insensitive).
+            ignoredApps: ["easyeffects", "pavucontrol", "cava"]
         }
     })
 
@@ -96,9 +120,13 @@ Singleton {
     property var osd: defaults.osd
     property var notifications: defaults.notifications
     property var calendar: defaults.calendar
+    property var brightness: defaults.brightness
+    property var nightLight: defaults.nightLight
+    property var systemMonitor: defaults.systemMonitor
+    property var privacy: defaults.privacy
 
     // Section properties above, kept in sync by apply().
-    readonly property var sections: ["bar", "monitorOverrides", "appearance", "audio", "session", "osd", "notifications", "calendar"]
+    readonly property var sections: ["bar", "monitorOverrides", "appearance", "audio", "session", "osd", "notifications", "calendar", "brightness", "nightLight", "systemMonitor", "privacy"]
 
     property bool loaded: false
     // True while set()/reset() changes are waiting to be written. A file load

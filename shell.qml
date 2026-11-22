@@ -53,6 +53,16 @@ ShellRoot {
         ControlCenterPanel {}
     }
 
+    LazyLoader {
+        active: Panels.panel === "network"
+        NetworkPanel {}
+    }
+
+    LazyLoader {
+        active: Panels.panel === "bluetooth"
+        BluetoothPanel {}
+    }
+
     Osd {}
 
     NotificationPopups {}

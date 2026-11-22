@@ -21,7 +21,12 @@ Vesper is inspired by noctalia-shell v4: a bar made of widgets you arrange from 
   | System tray | App tray icons with their menus |
   | Volume / Microphone | Click for the audio panel, middle click to mute, scroll to change |
   | Media | Now playing (MPRIS); play/pause, next, previous |
-  | Bluetooth | Status; click to turn on/off |
+  | Bluetooth | Status; click for the Bluetooth panel, right click to turn on/off |
+| Network / VPN | Wired and Wi-Fi status / VPN status; click for the network panel |
+| Brightness | This screen's brightness (laptop backlight or external monitor over DDC/CI); scroll to change |
+| System monitor | CPU, memory, temperatures, GPU, disk and network speed |
+| Night light / Keep awake | Click to toggle |
+| Privacy indicator | Shows while apps use the microphone, camera or screen sharing |
 | Notifications | Unread count; click for the history, right click for do not disturb |
 | Control center | Opens the control center |
   | Battery | Hidden on machines without a battery |
@@ -35,10 +40,13 @@ Vesper is inspired by noctalia-shell v4: a bar made of widgets you arrange from 
 - **Panels** that open from the bar:
   - **Calendar**: month view, optional week numbers.
   - **Audio**: output and input volume, pick the default device, per-app volume.
-  - **Control center**: volume and mic sliders, Bluetooth / do not disturb / power profile / mic toggles, the current media player, and shortcuts to settings and the session menu.
+  - **Control center**: volume, mic and brightness sliders, network / Bluetooth / do not disturb / power profile / night light / keep awake toggles, the current media player, and shortcuts to settings and the session menu.
+  - **Network**: wired status, Wi-Fi on/off and networks (with password entry), VPN connections.
+  - **Bluetooth**: on/off, connect and disconnect paired devices, pair new ones.
   - **Notification history**, with do not disturb.
 - **Notifications**: Vesper is a notification daemon, with popups (actions, images, links, replacing notifications) and a history that's kept across restarts.
-- **On-screen display** when the volume or microphone changes.
+- **On-screen display** when the volume, microphone or brightness changes.
+- **Night light** (with an optional schedule) and **keep awake**.
 - **Session menu**: suspend, log out, reboot, shut down (and lock, if you set a lock command), with keyboard shortcuts and a countdown before destructive actions.
 - **Settings window** for everything above. Changes apply immediately and are saved to a plain JSON file, which also reloads live if you edit it by hand.
 - **Themes**: Catppuccin Mocha and Latte, Compline and Lauds, Gruvbox Dark, Nord, Rosé Pine and Tokyo Night built in, plus your own.
@@ -53,7 +61,10 @@ Vesper is inspired by noctalia-shell v4: a bar made of widgets you arrange from 
 
 Optional, for the widgets that use them:
 
-- **BlueZ** (Bluetooth widget)
+- **NetworkManager** (Network and VPN widgets, network panel)
+- **BlueZ** (Bluetooth widget and panel)
+- **ddcutil** for external monitor brightness (the monitor needs DDC/CI on; you may need to load the `i2c-dev` module), **brightnessctl** for laptop screens
+- **hyprsunset** for night light. Vesper starts and stops it, so don't also run it yourself.
 - **UPower** (Battery widget) and **power-profiles-daemon** (Power profile widget)
 - **pavucontrol**, which the volume and microphone widgets open on right click by default (changeable)
 
@@ -142,6 +153,7 @@ Call these with `qs -c vesper ipc call <target> <function>`, e.g. in `binds.lua`
 ```lua
 hl.bind("SUPER + COMMA", hl.dsp.exec_cmd("qs -c vesper ipc call settings toggle"))
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("qs -c vesper ipc call volume up"))
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("qs -c vesper ipc call brightness up"))
 ```
 
 | Target | Functions |
@@ -151,12 +163,17 @@ hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("qs -c vesper ipc call volume up
 | `calendar` | `toggle`, `open`, `close` |
 | `audio` | `toggle`, `open`, `close` |
 | `controlCenter` | `toggle`, `open`, `close` |
+| `network` | `toggle`, `open`, `close`, `toggleWifi` |
+| `bluetooth` | `toggle`, `open`, `close`, `togglePower` |
+| `brightness` | `up`, `down`, `set <0-100>`, `get`, `list`, `refresh` (focused monitor) |
+| `nightLight` | `toggle`, `enable`, `disable`, `isActive` |
+| `keepAwake` | `toggle`, `enable`, `disable`, `isEnabled` |
 | `notifications` | `toggle`, `open`, `close`, `toggleDnd`, `setDnd <true/false>`, `clear`, `dismissPopups` |
 | `volume` | `up`, `down`, `toggleMute`, `set <0-100>`, `get` |
 | `mic` | `up`, `down`, `toggleMute` |
 | `media` | `playPause`, `next`, `previous` |
 
-The volume step is set in Settings → General. Panels opened by IPC appear next to their bar widget on the focused monitor if it has one (e.g. the calendar under the clock). `notifications dismissPopups` hides the current popups; they stay in the history. Tab names for `openTab` are `bar`, `widgets`, `appearance`, `notifications` and `general`.
+The volume step is set in Settings → General. Panels opened by IPC appear next to their bar widget on the focused monitor if it has one (e.g. the calendar under the clock). `notifications dismissPopups` hides the current popups; they stay in the history. Tab names for `openTab` are `bar`, `widgets`, `appearance`, `notifications`, `system` and `general`.
 
 ## Credits
 

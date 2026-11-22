@@ -14,6 +14,17 @@ Singleton {
     id: root
 
     readonly property var widgets: ({
+        "Vpn": {
+            component: "Vpn.qml",
+            name: "VPN",
+            icon: "shield-check",
+            description: "VPN status (NetworkManager VPNs). Click for the network panel.",
+            allowMultiple: false,
+            options: [
+                { key: "hideWhenOff", type: "bool", label: "Hide when no VPN is connected", default: true },
+                { key: "showName", type: "bool", label: "Show VPN name", default: false }
+            ]
+        },
         "Workspaces": {
             component: "Workspaces.qml",
             name: "Workspaces",
@@ -25,6 +36,16 @@ Singleton {
                   values: [{ value: "number", label: "Number" }, { value: "name", label: "Name" }] },
                 { key: "onlyThisMonitor", type: "bool", label: "Only show this monitor's workspaces", default: false },
                 { key: "showSpecial", type: "bool", label: "Show special (scratchpad) workspaces", default: false }
+            ]
+        },
+        "Brightness": {
+            component: "Brightness.qml",
+            name: "Brightness",
+            icon: "brightness-up",
+            description: "Brightness of this screen (backlight or DDC). Scroll to change, click for the control center.",
+            allowMultiple: false,
+            options: [
+                { key: "showPercent", type: "bool", label: "Show percentage", default: false }
             ]
         },
         "Clock": {
@@ -104,11 +125,31 @@ Singleton {
             component: "BluetoothWidget.qml",
             name: "Bluetooth",
             icon: "bluetooth",
-            description: "Bluetooth status. Click to turn it on or off.",
+            description: "Bluetooth status. Click for the Bluetooth panel, right click to turn it on or off.",
             allowMultiple: false,
             options: [
+                { key: "clickAction", type: "enum", label: "Left click", default: "panel",
+                  values: [{ value: "panel", label: "Open Bluetooth panel" }, { value: "toggle", label: "Turn on / off" }] },
                 { key: "showDeviceName", type: "bool", label: "Show connected device", default: false }
             ]
+        },
+        "Network": {
+            component: "Network.qml",
+            name: "Network",
+            icon: "network",
+            description: "Wired / Wi-Fi status, with a shield while a VPN is connected. Click for the network panel.",
+            allowMultiple: false,
+            options: [
+                { key: "showName", type: "bool", label: "Show connection name", default: false }
+            ]
+        },
+        "NightLight": {
+            component: "NightLight.qml",
+            name: "Night light",
+            icon: "moon",
+            description: "Click to turn night light on or off. Needs hyprsunset.",
+            allowMultiple: false,
+            options: []
         },
         "Notifications": {
             component: "Notifications.qml",
@@ -141,6 +182,14 @@ Singleton {
             options: [
                 { key: "showLabel", type: "bool", label: "Show profile name", default: false }
             ]
+        },
+        "KeepAwake": {
+            component: "KeepAwake.qml",
+            name: "Keep awake",
+            icon: "coffee",
+            description: "Click to stop the screen blanking or locking when idle.",
+            allowMultiple: false,
+            options: []
         },
         "KeyboardLayout": {
             component: "KeyboardLayout.qml",
@@ -194,6 +243,25 @@ Singleton {
                 { key: "middleClick", type: "command", label: "Middle click", default: "" }
             ]
         },
+        "SystemMonitor": {
+            component: "SystemMonitor.qml",
+            name: "System monitor",
+            icon: "device-desktop-analytics",
+            description: "CPU, memory, temperatures, GPU, disk and network.",
+            allowMultiple: true,
+            options: [
+                { key: "showCpu", type: "bool", label: "CPU usage", default: true },
+                { key: "showCpuTemp", type: "bool", label: "CPU temperature", default: true },
+                { key: "showMemory", type: "bool", label: "Memory", default: true },
+                { key: "memoryAsPercent", type: "bool", label: "Memory as a percentage", default: false },
+                { key: "showGpu", type: "bool", label: "GPU usage", default: false, hint: "AMD, or NVIDIA with nvidia-smi." },
+                { key: "showGpuTemp", type: "bool", label: "GPU temperature", default: true },
+                { key: "showDisk", type: "bool", label: "Disk usage", default: false, hint: "Of the disk path in Settings → General." },
+                { key: "showNetwork", type: "bool", label: "Network speed", default: false },
+                { key: "monospace", type: "bool", label: "Monospace numbers", default: true },
+                { key: "clickCommand", type: "command", label: "Click command", default: "", hint: "e.g. resources, missioncenter or kitty btop" }
+            ]
+        },
         "Text": {
             component: "TextWidget.qml",
             name: "Text",
@@ -206,6 +274,18 @@ Singleton {
                   hint: "If set, its first output line is shown instead of the text." },
                 { key: "interval", type: "int", label: "Refresh (seconds)", default: 10, min: 1, max: 3600, step: 1 },
                 { key: "color", type: "color", label: "Colour", default: "", hint: "Empty uses the theme's text colour." }
+            ]
+        },
+        "Privacy": {
+            component: "Privacy.qml",
+            name: "Privacy indicator",
+            icon: "eye",
+            description: "Shows while apps use the microphone, camera or screen sharing. Hover to see which.",
+            allowMultiple: false,
+            options: [
+                { key: "showMic", type: "bool", label: "Microphone", default: true },
+                { key: "showCamera", type: "bool", label: "Camera", default: true },
+                { key: "showScreen", type: "bool", label: "Screen sharing", default: true }
             ]
         },
         "SessionButton": {

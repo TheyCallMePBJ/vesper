@@ -14,7 +14,7 @@ Scope {
         function toggle(): void { Panels.toggleSettings(null); }
         function open(): void { Panels.openSettings(null); }
         function close(): void { Panels.closeSettings(); }
-        // Open on a tab: bar, widgets, appearance, notifications, general.
+        // Open on a tab: bar, widgets, appearance, notifications, system, general.
         function openTab(tab: string): void { Panels.openSettingsTab(tab, null); }
         // Re-read settings.json.
         function reload(): void { Settings.reload(); }
@@ -69,6 +69,24 @@ Scope {
     }
 
     IpcHandler {
+        target: "network"
+
+        function toggle(): void { Panels.togglePanel("network", null); }
+        function open(): void { Panels.openPanel("network", null); }
+        function close(): void { if (Panels.panel === "network") Panels.closePanel(); }
+        function toggleWifi(): void { NetworkService.setWifiEnabled(!NetworkService.wifiEnabled); }
+    }
+
+    IpcHandler {
+        target: "bluetooth"
+
+        function toggle(): void { Panels.togglePanel("bluetooth", null); }
+        function open(): void { Panels.openPanel("bluetooth", null); }
+        function close(): void { if (Panels.panel === "bluetooth") Panels.closePanel(); }
+        function togglePower(): void { BluetoothService.togglePower(); }
+    }
+
+    IpcHandler {
         target: "volume"
 
         function up(): void { AudioService.changeVolume(1); }
@@ -77,6 +95,44 @@ Scope {
         // Percentage 0-100.
         function set(percent: int): void { AudioService.setVolume(percent / 100); }
         function get(): int { return Math.round(AudioService.volume * 100); }
+    }
+
+    IpcHandler {
+        target: "brightness"
+
+        // The focused monitor's brightness.
+        function up(): void { BrightnessService.change(BrightnessService.forScreen(Panels.focusedScreen()), 1); }
+        function down(): void { BrightnessService.change(BrightnessService.forScreen(Panels.focusedScreen()), -1); }
+        // Percentage 0-100.
+        function set(percent: int): void { BrightnessService.set(BrightnessService.forScreen(Panels.focusedScreen()), percent / 100); }
+        function get(): int {
+            const m = BrightnessService.forScreen(Panels.focusedScreen());
+            return m && m.available ? Math.round(m.value * 100) : -1;
+        }
+        // Every monitor as "name: percent" lines.
+        function list(): string {
+            return BrightnessService.monitors.map(m => `${m.name}: ${m.available ? Math.round(m.value * 100) + "%" : "unavailable (" + m.method + ")"}`).join("\n");
+        }
+        // Re-read levels from the monitors (after using their own buttons).
+        function refresh(): void { BrightnessService.refreshAll(); }
+    }
+
+    IpcHandler {
+        target: "nightLight"
+
+        function toggle(): void { NightLightService.toggle(); }
+        function enable(): void { NightLightService.setEnabled(true); }
+        function disable(): void { NightLightService.setEnabled(false); }
+        function isActive(): bool { return NightLightService.active; }
+    }
+
+    IpcHandler {
+        target: "keepAwake"
+
+        function toggle(): void { KeepAwakeService.toggle(); }
+        function enable(): void { KeepAwakeService.enabled = true; }
+        function disable(): void { KeepAwakeService.enabled = false; }
+        function isEnabled(): bool { return KeepAwakeService.enabled; }
     }
 
     IpcHandler {

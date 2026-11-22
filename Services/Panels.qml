@@ -41,8 +41,10 @@ Singleton {
     }
 
     // `anchorItem` is a BarWidget (it has `screen`), or null for IPC.
-    function openPanel(name, anchorItem) {
-        const screen = anchorItem && anchorItem.screen ? anchorItem.screen : focusedScreen();
+    // Without an anchor, the panel opens on `onScreen` (or the focused screen),
+    // next to the widget registered for it there if any.
+    function openPanel(name, anchorItem, onScreen) {
+        const screen = anchorItem && anchorItem.screen ? anchorItem.screen : (onScreen || focusedScreen());
         // Moving to another screen recreates the panel there.
         if (panel !== "" && panelScreen !== screen)
             panel = "";
@@ -56,14 +58,14 @@ Singleton {
         panelAnchor = null;
     }
 
-    function togglePanel(name, anchorItem) {
-        const screen = anchorItem && anchorItem.screen ? anchorItem.screen : focusedScreen();
+    function togglePanel(name, anchorItem, onScreen) {
+        const screen = anchorItem && anchorItem.screen ? anchorItem.screen : (onScreen || focusedScreen());
         // A second click on the same widget (or IPC toggle) closes; another
         // widget's click moves the panel there.
         if (panel === name && panelScreen === screen && (!anchorItem || anchorItem === panelAnchor))
             closePanel();
         else
-            openPanel(name, anchorItem);
+            openPanel(name, anchorItem, screen);
     }
 
     // The screen with Hyprland's focused monitor, or the first screen.

@@ -16,6 +16,8 @@ BarPanel {
 
     panelWidth: Math.round(Style.fontSize * 26)
 
+    Component.onCompleted: BrightnessService.refreshAll()
+
     readonly property string user: Quickshell.env("USER") || ""
     property string host: ""
     property real uptimeSeconds: 0
@@ -124,6 +126,22 @@ BarPanel {
                 onMoved: v => AudioService.setMicVolume(v)
                 onMore: Panels.openPanel("audio", Panels.findAnchor("audio", root.screen))
             }
+
+            // One slider per screen whose brightness can be set.
+            Repeater {
+                // This screen first.
+                model: BrightnessService.available.slice().sort((a, b) => (b.name === root.screen.name) - (a.name === root.screen.name))
+
+                SliderRow {
+                    required property var modelData
+                    icon: modelData.value < 0.5 ? "brightness-down" : "brightness-up"
+                    value: modelData.value
+                    label: BrightnessService.available.length > 1 ? modelData.name : ""
+                    tooltip: "Brightness"
+                    showMore: false
+                    onMoved: v => BrightnessService.set(modelData, v)
+                }
+            }
         }
     }
 
@@ -140,6 +158,23 @@ BarPanel {
         readonly property var connectedDevices: adapter ? adapter.devices.values.filter(d => d.connected) : []
 
         QuickToggle {
+            icon: NetworkService.icon
+            label: NetworkService.hasWifi && !NetworkService.wiredDevice ? "Wi-Fi" : "Network"
+            detail: !NetworkService.connected ? (NetworkService.hasWifi && !NetworkService.wifiEnabled ? "Wi-Fi off" : "Disconnected")
+                  : NetworkService.vpnActive ? `${NetworkService.label} · VPN` : NetworkService.label
+            on: NetworkService.connected
+            showMore: true
+            // With Wi-Fi only, the tile switches it; otherwise it opens the panel.
+            onClicked: {
+                if (NetworkService.hasWifi && !NetworkService.wiredDevice)
+                    NetworkService.setWifiEnabled(!NetworkService.wifiEnabled);
+                else
+                    Panels.openPanel("network", Panels.findAnchor("network", root.screen));
+            }
+            onMore: Panels.openPanel("network", Panels.findAnchor("network", root.screen))
+        }
+
+        QuickToggle {
             visible: !!toggles.adapter
             icon: toggles.adapter && toggles.adapter.enabled ? (toggles.connectedDevices.length > 0 ? "bluetooth-connected" : "bluetooth") : "bluetooth-off"
             label: "Bluetooth"
@@ -147,7 +182,9 @@ BarPanel {
                   : toggles.connectedDevices.length === 1 ? (toggles.connectedDevices[0].name || toggles.connectedDevices[0].deviceName)
                   : toggles.connectedDevices.length > 1 ? `${toggles.connectedDevices.length} devices` : "On"
             on: !!toggles.adapter && toggles.adapter.enabled
+            showMore: true
             onClicked: toggles.adapter.enabled = !toggles.adapter.enabled
+            onMore: Panels.openPanel("bluetooth", Panels.findAnchor("bluetooth", root.screen))
         }
 
         QuickToggle {
@@ -171,12 +208,22 @@ BarPanel {
         }
 
         QuickToggle {
-            icon: AudioService.micMuted ? "microphone-off" : "microphone"
-            label: "Microphone"
-            detail: AudioService.micMuted ? "Muted" : "On"
-            on: !AudioService.micMuted
-            enabled: AudioService.sourceReady
-            onClicked: AudioService.toggleMicMute()
+            visible: NightLightService.installed
+            icon: NightLightService.enabled ? "moon-stars" : "moon"
+            label: "Night light"
+            detail: !NightLightService.enabled ? "Off"
+                  : NightLightService.active ? `${NightLightService.temperature} K`
+                  : `From ${Settings.nightLight.start}`
+            on: NightLightService.enabled
+            onClicked: NightLightService.toggle()
+        }
+
+        QuickToggle {
+            icon: KeepAwakeService.enabled ? "coffee" : "coffee-off"
+            label: "Keep awake"
+            detail: KeepAwakeService.enabled ? "On" : "Off"
+            on: KeepAwakeService.enabled
+            onClicked: KeepAwakeService.toggle()
         }
     }
 
@@ -322,6 +369,9 @@ BarPanel {
         property bool muted
         property real value
         property string tooltip
+        property bool showMore: true
+        // Shown under the icon, e.g. which monitor.
+        property string label: ""
         signal toggle()
         signal moved(real value)
         signal more()
@@ -330,10 +380,27 @@ BarPanel {
         spacing: Math.round(Style.fontSize * 0.2)
 
         VIconButton {
+            visible: sliderRow.label === ""
             iconName: sliderRow.icon
             iconColor: sliderRow.muted ? Theme.textMuted : Theme.text
             tooltip: sliderRow.tooltip
             onClicked: sliderRow.toggle()
+        }
+        ColumnLayout {
+            visible: sliderRow.label !== ""
+            Layout.preferredWidth: Math.round(Style.fontSize * 2.2)
+            spacing: -2
+            VIcon {
+                Layout.alignment: Qt.AlignHCenter
+                icon: sliderRow.icon
+                size: Style.fontSize * 1.05
+            }
+            VText {
+                Layout.alignment: Qt.AlignHCenter
+                text: sliderRow.label
+                color: Theme.textMuted
+                font.pixelSize: Style.fontSize * 0.62
+            }
         }
         VSlider {
             Layout.fillWidth: true
@@ -342,9 +409,15 @@ BarPanel {
             onChangedByUser: v => sliderRow.moved(v)
         }
         VIconButton {
+            visible: sliderRow.showMore
             iconName: "chevron-right"
             tooltip: "Devices and apps"
             onClicked: sliderRow.more()
+        }
+        // Keeps sliders lined up with the ones that have the button.
+        Item {
+            visible: !sliderRow.showMore
+            implicitWidth: Math.round(Style.fontSize * 2.2)
         }
     }
 
@@ -354,6 +427,9 @@ BarPanel {
         property string label
         property string detail
         property bool on
+        // A chevron on the right that emits more() (e.g. open a panel).
+        property bool showMore: false
+        signal more()
 
         Layout.fillWidth: true
         Layout.preferredWidth: 1
@@ -399,6 +475,15 @@ BarPanel {
                     font.pixelSize: Style.fontSize * 0.82
                     elide: Text.ElideRight
                 }
+            }
+            VIconButton {
+                visible: tile.showMore
+                Layout.rightMargin: -Math.round(Style.fontSize * 0.4)
+                size: Math.round(Style.fontSize * 2)
+                iconName: "chevron-right"
+                iconColor: tile.on ? Theme.onAccent : Theme.text
+                tooltip: "More"
+                onClicked: tile.more()
             }
         }
     }
