@@ -13,12 +13,7 @@ BarWidget {
     readonly property var toplevel: HyprlandService.activeToplevel
     readonly property string appId: toplevel && toplevel.wayland ? (toplevel.wayland.appId || "") : ""
     readonly property string title: toplevel ? (toplevel.title || appId) : ""
-    // Reading applications.values makes this re-run once the app list has loaded.
-    readonly property var entry: appId !== "" && DesktopEntries.applications.values.length >= 0 ? DesktopEntries.heuristicLookup(appId) : null
-    readonly property string iconSource: {
-        const fromEntry = entry && entry.icon ? Quickshell.iconPath(entry.icon, true) : "";
-        return fromEntry || (appId !== "" ? Quickshell.iconPath(appId, true) : "");
-    }
+    readonly property string iconSource: AppIcons.forApp(appId)
 
     readonly property bool showIcon: root.options.showIcon && iconSource !== ""
     readonly property bool showTitle: !root.vertical && root.options.showTitle

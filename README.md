@@ -17,11 +17,13 @@ Vesper is inspired by noctalia-shell v4: a bar made of widgets you arrange from 
   |---|---|
   | Workspaces | Click to switch; optionally only the current monitor's workspaces |
   | Active window | Icon and title of the focused window |
-  | Clock | Any Qt date/time format |
+  | Clock | Any Qt date/time format; click for the calendar |
   | System tray | App tray icons with their menus |
-  | Volume / Microphone | Click to mute, scroll to change |
+  | Volume / Microphone | Click for the audio panel, middle click to mute, scroll to change |
   | Media | Now playing (MPRIS); play/pause, next, previous |
   | Bluetooth | Status; click to turn on/off |
+| Notifications | Unread count; click for the history, right click for do not disturb |
+| Control center | Opens the control center |
   | Battery | Hidden on machines without a battery |
   | Power profile | Switch between power saver, balanced and performance |
   | Keyboard layout | Click to switch layout |
@@ -30,6 +32,13 @@ Vesper is inspired by noctalia-shell v4: a bar made of widgets you arrange from 
   | Text | Fixed text or a command's output |
   | Spacer, Settings button, Session button | |
 
+- **Panels** that open from the bar:
+  - **Calendar**: month view, optional week numbers.
+  - **Audio**: output and input volume, pick the default device, per-app volume.
+  - **Control center**: volume and mic sliders, Bluetooth / do not disturb / power profile / mic toggles, the current media player, and shortcuts to settings and the session menu.
+  - **Notification history**, with do not disturb.
+- **Notifications**: Vesper is a notification daemon, with popups (actions, images, links, replacing notifications) and a history that's kept across restarts.
+- **On-screen display** when the volume or microphone changes.
 - **Session menu**: suspend, log out, reboot, shut down (and lock, if you set a lock command), with keyboard shortcuts and a countdown before destructive actions.
 - **Settings window** for everything above. Changes apply immediately and are saved to a plain JSON file, which also reloads live if you edit it by hand.
 - **Themes**: Catppuccin Mocha and Latte, Compline and Lauds, Gruvbox Dark, Nord, Rosé Pine and Tokyo Night built in, plus your own.
@@ -40,13 +49,15 @@ Vesper is inspired by noctalia-shell v4: a bar made of widgets you arrange from 
 
 - **Hyprland** with a **Lua config** (`hyprland.lua`). Other compositors and the older `hyprland.conf` format aren't supported.
 - **Quickshell** 0.3 or newer.
-- **PipeWire** for the volume and microphone widgets.
+- **PipeWire** for the volume and microphone widgets, the audio panel and the OSD.
 
 Optional, for the widgets that use them:
 
 - **BlueZ** (Bluetooth widget)
 - **UPower** (Battery widget) and **power-profiles-daemon** (Power profile widget)
 - **pavucontrol**, which the volume and microphone widgets open on right click by default (changeable)
+
+Vesper is a notification daemon, so stop any other one (mako, dunst, swaync, another shell). If one is running, Vesper waits and takes over once it exits. To keep your own daemon, turn off Settings → Notifications → Receive notifications.
 
 ## Installation
 
@@ -82,9 +93,9 @@ Your settings live separately in `~/.config/vesper/`, so updating never touches 
 
 ## Configuration
 
-Open the settings window with the settings button on the bar, by right-clicking empty bar space (the default action), or with `qs -c vesper ipc call settings toggle`.
+Open the settings window with the settings button on the bar, from the control center, by right-clicking empty bar space (the default action), or with `qs -c vesper ipc call settings toggle`.
 
-Settings are stored in `~/.config/vesper/settings.json`. The file only contains what you've changed; everything else uses the defaults. You can edit it by hand and Vesper picks up changes immediately. If the file has a mistake, Vesper keeps the last working settings and logs a warning.
+Settings are stored in `~/.config/vesper/settings.json` (notification history in `~/.local/state/vesper/notifications.json`). The file only contains what you've changed; everything else uses the defaults. You can edit it by hand and Vesper picks up changes immediately. If the file has a mistake, Vesper keeps the last working settings and logs a warning.
 
 ### Custom themes
 
@@ -135,13 +146,17 @@ hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("qs -c vesper ipc call volume up
 
 | Target | Functions |
 |---|---|
-| `settings` | `toggle`, `open`, `close`, `reload` |
+| `settings` | `toggle`, `open`, `close`, `openTab <name>`, `reload` |
 | `session` | `toggle`, `open`, `close` |
+| `calendar` | `toggle`, `open`, `close` |
+| `audio` | `toggle`, `open`, `close` |
+| `controlCenter` | `toggle`, `open`, `close` |
+| `notifications` | `toggle`, `open`, `close`, `toggleDnd`, `setDnd <true/false>`, `clear`, `dismissPopups` |
 | `volume` | `up`, `down`, `toggleMute`, `set <0-100>`, `get` |
 | `mic` | `up`, `down`, `toggleMute` |
 | `media` | `playPause`, `next`, `previous` |
 
-The volume step is set in Settings → General.
+The volume step is set in Settings → General. Panels opened by IPC appear next to their bar widget on the focused monitor if it has one (e.g. the calendar under the clock). `notifications dismissPopups` hides the current popups; they stay in the history. Tab names for `openTab` are `bar`, `widgets`, `appearance`, `notifications` and `general`.
 
 ## Credits
 

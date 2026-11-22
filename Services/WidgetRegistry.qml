@@ -31,7 +31,7 @@ Singleton {
             component: "Clock.qml",
             name: "Clock",
             icon: "clock",
-            description: "Date and time.",
+            description: "Date and time. Click to open the calendar.",
             allowMultiple: true,
             options: [
                 { key: "format", type: "text", label: "Format", default: "HH:mm - dd/MM",
@@ -66,10 +66,12 @@ Singleton {
             component: "Volume.qml",
             name: "Volume",
             icon: "volume",
-            description: "Click to mute, scroll to change volume.",
+            description: "Click for the audio panel, middle click to mute, scroll to change volume.",
             allowMultiple: false,
             options: [
                 { key: "showPercent", type: "bool", label: "Show percentage", default: true },
+                { key: "clickAction", type: "enum", label: "Left click", default: "panel",
+                  values: [{ value: "panel", label: "Open audio panel" }, { value: "mute", label: "Mute" }] },
                 { key: "rightClickCommand", type: "command", label: "Right click command", default: "pavucontrol" }
             ]
         },
@@ -77,10 +79,12 @@ Singleton {
             component: "Microphone.qml",
             name: "Microphone",
             icon: "microphone",
-            description: "Click to mute, scroll to change input volume.",
+            description: "Click for the audio panel, middle click to mute, scroll to change input volume.",
             allowMultiple: false,
             options: [
                 { key: "showPercent", type: "bool", label: "Show percentage", default: false },
+                { key: "clickAction", type: "enum", label: "Left click", default: "panel",
+                  values: [{ value: "panel", label: "Open audio panel" }, { value: "mute", label: "Mute" }] },
                 { key: "rightClickCommand", type: "command", label: "Right click command", default: "pavucontrol" }
             ]
         },
@@ -104,6 +108,17 @@ Singleton {
             allowMultiple: false,
             options: [
                 { key: "showDeviceName", type: "bool", label: "Show connected device", default: false }
+            ]
+        },
+        "Notifications": {
+            component: "Notifications.qml",
+            name: "Notifications",
+            icon: "bell",
+            description: "Unread notifications. Click for the history, right click for do not disturb.",
+            allowMultiple: false,
+            options: [
+                { key: "showCount", type: "bool", label: "Show unread count", default: true },
+                { key: "hideWhenEmpty", type: "bool", label: "Hide when there are no notifications", default: false }
             ]
         },
         "Battery": {
@@ -150,6 +165,16 @@ Singleton {
                 { key: "showNum", type: "bool", label: "Num Lock", default: true },
                 { key: "showScroll", type: "bool", label: "Scroll Lock", default: false },
                 { key: "hideWhenOff", type: "bool", label: "Only show keys that are on", default: false }
+            ]
+        },
+        "ControlCenter": {
+            component: "ControlCenter.qml",
+            name: "Control center",
+            icon: "adjustments-horizontal",
+            description: "Opens the control center: volume, toggles, media and session.",
+            allowMultiple: false,
+            options: [
+                { key: "icon", type: "text", label: "Icon", default: "adjustments-horizontal", hint: "Tabler icon name (tabler.io/icons)." }
             ]
         },
         "CustomButton": {

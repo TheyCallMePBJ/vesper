@@ -11,9 +11,60 @@ Singleton {
 
     property bool settingsOpen: false
     property ShellScreen settingsScreen: null
+    // Tab to show when the settings window opens; "" keeps the current one.
+    property string settingsTab: ""
 
     property bool sessionOpen: false
     property ShellScreen sessionScreen: null
+
+    // The one bar panel that's open ("calendar", "audio", "notifications",
+    // "controlCenter"), or "". It opens next to `panelAnchor`: the widget
+    // that opened it, or one registered for it on that screen's bar.
+    property string panel: ""
+    property ShellScreen panelScreen: null
+    property Item panelAnchor: null
+
+    // Widgets that can open a panel register here, so IPC can open the panel
+    // next to them: [{ name, item }].
+    property var anchors: []
+
+    function registerAnchor(name, item) {
+        anchors = anchors.concat([{ name, item }]);
+    }
+    function unregisterAnchor(item) {
+        anchors = anchors.filter(a => a.item !== item);
+    }
+
+    function findAnchor(name, screen) {
+        const match = anchors.find(a => a.name === name && a.item.screen === screen && a.item.visible);
+        return match ? match.item : null;
+    }
+
+    // `anchorItem` is a BarWidget (it has `screen`), or null for IPC.
+    function openPanel(name, anchorItem) {
+        const screen = anchorItem && anchorItem.screen ? anchorItem.screen : focusedScreen();
+        // Moving to another screen recreates the panel there.
+        if (panel !== "" && panelScreen !== screen)
+            panel = "";
+        panelAnchor = anchorItem || findAnchor(name, screen);
+        panelScreen = screen;
+        panel = name;
+    }
+
+    function closePanel() {
+        panel = "";
+        panelAnchor = null;
+    }
+
+    function togglePanel(name, anchorItem) {
+        const screen = anchorItem && anchorItem.screen ? anchorItem.screen : focusedScreen();
+        // A second click on the same widget (or IPC toggle) closes; another
+        // widget's click moves the panel there.
+        if (panel === name && panelScreen === screen && (!anchorItem || anchorItem === panelAnchor))
+            closePanel();
+        else
+            openPanel(name, anchorItem);
+    }
 
     // The screen with Hyprland's focused monitor, or the first screen.
     function focusedScreen() {
@@ -25,9 +76,15 @@ Singleton {
         return screens.length > 0 ? screens[0] : null;
     }
 
+    function openSettingsTab(tab, screen) {
+        settingsTab = tab;
+        openSettings(screen);
+    }
+
     function openSettings(screen) {
         settingsScreen = screen || focusedScreen();
         settingsOpen = true;
+        closePanel();
     }
 
     function closeSettings() {
@@ -44,6 +101,7 @@ Singleton {
     function openSession(screen) {
         sessionScreen = screen || focusedScreen();
         sessionOpen = true;
+        closePanel();
     }
 
     function closeSession() {

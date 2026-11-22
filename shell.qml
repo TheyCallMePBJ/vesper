@@ -6,6 +6,9 @@ import qs.Services
 import qs.Modules.Bar
 import qs.Modules.Settings
 import qs.Modules.SessionMenu
+import qs.Modules.Panels
+import qs.Modules.OSD
+import qs.Modules.Notifications
 
 ShellRoot {
     // One bar per screen, limited to bar.monitors if that list isn't empty.
@@ -28,6 +31,31 @@ ShellRoot {
         active: Panels.sessionOpen
         SessionMenu {}
     }
+
+    // Bar panels: at most one is open at a time.
+    LazyLoader {
+        active: Panels.panel === "calendar"
+        CalendarPanel {}
+    }
+
+    LazyLoader {
+        active: Panels.panel === "audio"
+        AudioPanel {}
+    }
+
+    LazyLoader {
+        active: Panels.panel === "notifications"
+        NotificationHistoryPanel {}
+    }
+
+    LazyLoader {
+        active: Panels.panel === "controlCenter"
+        ControlCenterPanel {}
+    }
+
+    Osd {}
+
+    NotificationPopups {}
 
     IpcService {}
 }

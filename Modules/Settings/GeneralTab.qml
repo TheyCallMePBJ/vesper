@@ -66,6 +66,27 @@ ColumnLayout {
         }
     }
 
+    SettingsSection {
+        title: "Calendar"
+
+        SettingsRow {
+            label: "First day of the week"
+            VComboBox {
+                options: [{ value: -1, label: "From locale" }].concat([0, 1, 2, 3, 4, 5, 6].map(d => ({ value: d, label: Qt.locale().dayName(d) })))
+                value: Settings.calendar.firstDayOfWeek
+                onChangedByUser: v => Settings.set("calendar.firstDayOfWeek", v)
+            }
+        }
+
+        SettingsRow {
+            label: "Show week numbers"
+            VToggle {
+                value: Settings.calendar.showWeekNumbers === true
+                onChangedByUser: v => Settings.set("calendar.showWeekNumbers", v)
+            }
+        }
+    }
+
     component CommandRow: SettingsRow {
         id: commandRow
         property string key

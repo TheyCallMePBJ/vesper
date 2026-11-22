@@ -59,6 +59,27 @@ Singleton {
             logoutCommand: "",        // empty = exit Hyprland
             rebootCommand: "systemctl reboot",
             shutdownCommand: "systemctl poweroff"
+        },
+        osd: {
+            enabled: true,            // popup when volume or mic changes
+            position: "bottom",       // top | bottom | left | right (centred on that edge)
+            timeout: 1500             // ms
+        },
+        notifications: {
+            enabled: true,            // false: Vesper doesn't act as notification daemon (restart to apply)
+            doNotDisturb: false,      // no popups; notifications still go to history
+            position: "top-right",    // top-left | top | top-right | bottom-left | bottom | bottom-right
+            monitor: "",              // empty = focused monitor
+            timeout: 5,               // seconds for normal notifications
+            lowTimeout: 3,            // seconds for low urgency
+            criticalTimeout: 0,       // seconds for critical; 0 = until dismissed
+            respectAppTimeout: true,  // use the timeout the app asks for, if any
+            maxPopups: 4,
+            historyLimit: 100         // 0 = don't keep history
+        },
+        calendar: {
+            firstDayOfWeek: -1,       // -1 = from locale, 0 = Sunday, 1 = Monday, ... 6 = Saturday
+            showWeekNumbers: false
         }
     })
 
@@ -72,6 +93,12 @@ Singleton {
     property var appearance: defaults.appearance
     property var audio: defaults.audio
     property var session: defaults.session
+    property var osd: defaults.osd
+    property var notifications: defaults.notifications
+    property var calendar: defaults.calendar
+
+    // Section properties above, kept in sync by apply().
+    readonly property var sections: ["bar", "monitorOverrides", "appearance", "audio", "session", "osd", "notifications", "calendar"]
 
     property bool loaded: false
     // True while set()/reset() changes are waiting to be written. A file load
@@ -159,11 +186,9 @@ Singleton {
         const merged = merge(defaults, raw);
         // Only reassign sections that actually changed, so unrelated bindings
         // (and the widgets they create) are left alone.
-        if (!sameJson(bar, merged.bar)) bar = merged.bar;
-        if (!sameJson(monitorOverrides, merged.monitorOverrides)) monitorOverrides = merged.monitorOverrides;
-        if (!sameJson(appearance, merged.appearance)) appearance = merged.appearance;
-        if (!sameJson(audio, merged.audio)) audio = merged.audio;
-        if (!sameJson(session, merged.session)) session = merged.session;
+        for (const key of sections)
+            if (!sameJson(root[key], merged[key]))
+                root[key] = merged[key];
     }
 
     // Upgrade older settings files. Add one step per version bump:

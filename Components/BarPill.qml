@@ -22,6 +22,8 @@ MouseArea {
     property bool textOnVertical: true
     property bool handlesWheel: false
     property bool interactive: true
+    // Keeps the hover background on, e.g. while the widget's panel is open.
+    property bool active: false
 
     // One step per wheel notch: +1 = up/away, -1 = down/towards.
     signal wheelStep(int direction)
@@ -64,7 +66,7 @@ MouseArea {
         anchors.bottomMargin: root.vertical ? -root.pad : 0
         radius: Style.radius
         color: root.pressed ? Theme.surfaceAlt : Theme.surface
-        opacity: root.interactive && (root.containsMouse || root.pressed) ? 1 : 0
+        opacity: root.active || (root.interactive && (root.containsMouse || root.pressed)) ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: Style.animationDuration } }
     }
 

@@ -19,8 +19,20 @@ PanelWindow {
         { id: "bar", label: "Bar", icon: "layout-navbar" },
         { id: "widgets", label: "Widgets", icon: "puzzle" },
         { id: "appearance", label: "Appearance", icon: "palette" },
+        { id: "notifications", label: "Notifications", icon: "bell" },
         { id: "general", label: "General", icon: "adjustments-horizontal" }
     ]
+    function showRequestedTab() {
+        if (Panels.settingsTab !== "" && tabs.some(t => t.id === Panels.settingsTab))
+            currentTab = Panels.settingsTab;
+        Panels.settingsTab = "";
+    }
+    Component.onCompleted: showRequestedTab()
+    Connections {
+        target: Panels
+        function onSettingsTabChanged() { root.showRequestedTab(); }
+    }
+
     readonly property var currentTabInfo: tabs.find(t => t.id === currentTab) || tabs[0]
 
     WlrLayershell.namespace: "vesper-settings"
@@ -178,7 +190,7 @@ PanelWindow {
                         x: Math.round(Style.fontSize * 1.6)
                         y: Math.round(Style.fontSize * 0.8)
                         width: flick.width - x * 2
-                        sourceComponent: ({ bar: barTab, widgets: widgetsTab, appearance: appearanceTab, general: generalTab })[root.currentTab]
+                        sourceComponent: ({ bar: barTab, widgets: widgetsTab, appearance: appearanceTab, notifications: notificationsTab, general: generalTab })[root.currentTab]
                         onLoaded: flick.contentY = 0
                     }
                 }
@@ -189,5 +201,6 @@ PanelWindow {
     Component { id: barTab; BarTab {} }
     Component { id: widgetsTab; WidgetsTab {} }
     Component { id: appearanceTab; AppearanceTab {} }
+    Component { id: notificationsTab; NotificationsTab {} }
     Component { id: generalTab; GeneralTab {} }
 }

@@ -4,9 +4,12 @@ import qs.Commons
 import qs.Components
 import qs.Services
 
-// Left click: mute. Scroll: input volume. Right click: run the configured command.
+// Left click: audio panel (or mute, see the clickAction option). Middle click:
+// mute. Scroll: input volume. Right click: run the configured command.
 BarWidget {
     id: root
+
+    panelName: "audio"
 
     shown: AudioService.sourceReady
     implicitWidth: shown ? pill.implicitWidth : 0
@@ -23,14 +26,17 @@ BarWidget {
         text: root.options.showPercent ? Math.round(AudioService.micVolume * 100) + "%" : ""
         textColor: AudioService.micMuted ? Theme.textMuted : Theme.text
         handlesWheel: true
-        acceptedButtons: root.options.rightClickCommand ? (Qt.LeftButton | Qt.RightButton) : Qt.LeftButton
+        active: root.panelOpen
+        acceptedButtons: Qt.LeftButton | Qt.MiddleButton | (root.options.rightClickCommand ? Qt.RightButton : 0)
 
         onWheelStep: dir => AudioService.changeMicVolume(dir)
         onClicked: mouse => {
             if (mouse.button === Qt.RightButton)
                 Quickshell.execDetached(["sh", "-c", root.options.rightClickCommand]);
-            else
+            else if (mouse.button === Qt.MiddleButton || root.options.clickAction === "mute")
                 AudioService.toggleMicMute();
+            else
+                root.togglePanel();
         }
     }
 }

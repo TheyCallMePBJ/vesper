@@ -14,6 +14,8 @@ Scope {
         function toggle(): void { Panels.toggleSettings(null); }
         function open(): void { Panels.openSettings(null); }
         function close(): void { Panels.closeSettings(); }
+        // Open on a tab: bar, widgets, appearance, notifications, general.
+        function openTab(tab: string): void { Panels.openSettingsTab(tab, null); }
         // Re-read settings.json.
         function reload(): void { Settings.reload(); }
     }
@@ -24,6 +26,46 @@ Scope {
         function toggle(): void { Panels.toggleSession(null); }
         function open(): void { Panels.openSession(null); }
         function close(): void { Panels.closeSession(); }
+    }
+
+    IpcHandler {
+        target: "calendar"
+
+        // Opens next to the Clock widget on the focused monitor, if there is one.
+        function toggle(): void { Panels.togglePanel("calendar", null); }
+        function open(): void { Panels.openPanel("calendar", null); }
+        function close(): void { if (Panels.panel === "calendar") Panels.closePanel(); }
+    }
+
+    IpcHandler {
+        target: "audio"
+
+        // The audio panel (devices and app volumes).
+        function toggle(): void { Panels.togglePanel("audio", null); }
+        function open(): void { Panels.openPanel("audio", null); }
+        function close(): void { if (Panels.panel === "audio") Panels.closePanel(); }
+    }
+
+    IpcHandler {
+        target: "notifications"
+
+        // The history panel.
+        function toggle(): void { Panels.togglePanel("notifications", null); }
+        function open(): void { Panels.openPanel("notifications", null); }
+        function close(): void { if (Panels.panel === "notifications") Panels.closePanel(); }
+        function toggleDnd(): void { NotificationService.setDoNotDisturb(!NotificationService.doNotDisturb); }
+        function setDnd(on: bool): void { NotificationService.setDoNotDisturb(on); }
+        function clear(): void { NotificationService.clearHistory(); }
+        // Hide all popups (they stay in the history).
+        function dismissPopups(): void { NotificationService.hideAllPopups(); }
+    }
+
+    IpcHandler {
+        target: "controlCenter"
+
+        function toggle(): void { Panels.togglePanel("controlCenter", null); }
+        function open(): void { Panels.openPanel("controlCenter", null); }
+        function close(): void { if (Panels.panel === "controlCenter") Panels.closePanel(); }
     }
 
     IpcHandler {

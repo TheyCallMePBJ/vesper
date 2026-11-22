@@ -20,6 +20,11 @@ Singleton {
     readonly property real micVolume: sourceReady ? source.audio.volume : 0
     readonly property bool micMuted: sourceReady ? source.audio.muted : true
 
+    // Every output and input device, and the apps playing audio.
+    readonly property var sinks: Pipewire.nodes.values.filter(n => n.audio && !n.isStream && n.isSink)
+    readonly property var sources: Pipewire.nodes.values.filter(n => n.audio && !n.isStream && !n.isSink)
+    readonly property var playbackStreams: Pipewire.nodes.values.filter(n => n.audio && n.isStream && n.type === PwNodeType.AudioOutStream)
+
     readonly property real step: Math.max(1, Settings.audio.volumeStep || 5) / 100
 
     // Volume and mute are only available for nodes that are tracked.
@@ -56,6 +61,23 @@ Singleton {
     function toggleMicMute() {
         if (sourceReady)
             source.audio.muted = !source.audio.muted;
+    }
+
+    function setDefaultSink(node) {
+        Pipewire.preferredDefaultAudioSink = node;
+    }
+    function setDefaultSource(node) {
+        Pipewire.preferredDefaultAudioSource = node;
+    }
+
+    // Display name of a device or app stream.
+    function nodeName(node) {
+        if (!node)
+            return "";
+        const p = node.properties || {};
+        if (node.isStream)
+            return p["application.name"] || node.description || node.name;
+        return node.description || node.nickname || node.name;
     }
 
     function volumeIcon(v, isMuted) {
