@@ -1,14 +1,16 @@
 # Vesper
 
-A simple, configurable bar for [Hyprland](https://hypr.land), built with [Quickshell](https://quickshell.org).
+A small desktop shell for [Hyprland](https://hypr.land), built with [Quickshell](https://quickshell.org): a configurable bar, with the panels, notifications and system controls that go with it.
 
 ![Vesper's bar with the settings window open](docs/screenshot.png)
 
-Vesper is inspired by noctalia-shell v4: a bar made of widgets you arrange from a settings window, with theming that only affects the bar itself. It deliberately leaves out the extras (wallpaper-based colours, app theming templates, dock, lock screen) to stay small and easy to follow.
+Vesper is inspired by noctalia-shell v4. The bar is made of widgets you arrange from a settings window, and those widgets open panels for audio, network, Bluetooth, the calendar and a control center. Vesper is also your notification daemon and on-screen display, and handles brightness (including external monitors over DDC/CI), night light and keep awake.
+
+It deliberately leaves out the rest of a full shell (wallpaper-based colours, theming other apps, a dock, a lock screen) to stay small and easy to follow. Themes only change how Vesper itself looks.
 
 ## Features
 
-![Close-up of the right side of the bar: clock, tray, volume, settings and session buttons](docs/bar-right.png)
+![Close-up of the bar: clock, system tray, network, Bluetooth and volume](docs/bar-right.png)
 
 - **Bar** on any edge of the screen, with an exact pixel height, separate content scale, background opacity, and per-monitor settings.
 - **Widgets** you can add, remove, reorder and configure from the settings window:
@@ -22,13 +24,13 @@ Vesper is inspired by noctalia-shell v4: a bar made of widgets you arrange from 
   | Volume / Microphone | Click for the audio panel, middle click to mute, scroll to change |
   | Media | Now playing (MPRIS); play/pause, next, previous |
   | Bluetooth | Status; click for the Bluetooth panel, right click to turn on/off |
-| Network / VPN | Wired and Wi-Fi status / VPN status; click for the network panel |
-| Brightness | This screen's brightness (laptop backlight or external monitor over DDC/CI); scroll to change |
-| System monitor | CPU, memory, temperatures, GPU, disk and network speed |
-| Night light / Keep awake | Click to toggle |
-| Privacy indicator | Shows while apps use the microphone, camera or screen sharing |
-| Notifications | Unread count; click for the history, right click for do not disturb |
-| Control center | Opens the control center |
+  | Network / VPN | Wired and Wi-Fi status / VPN status; click for the network panel |
+  | Brightness | This screen's brightness (laptop backlight or external monitor over DDC/CI); scroll to change |
+  | System monitor | CPU, memory, temperatures, GPU, disk and network speed |
+  | Night light / Keep awake | Click to toggle |
+  | Privacy indicator | Shows while apps use the microphone, camera or screen sharing |
+  | Notifications | Unread count; click for the history, right click for do not disturb |
+  | Control center | Opens the control center |
   | Battery | Hidden on machines without a battery |
   | Power profile | Switch between power saver, balanced and performance |
   | Keyboard layout | Click to switch layout |
@@ -44,6 +46,9 @@ Vesper is inspired by noctalia-shell v4: a bar made of widgets you arrange from 
   - **Network**: wired status, Wi-Fi on/off and networks (with password entry), VPN connections.
   - **Bluetooth**: on/off, connect and disconnect paired devices, pair new ones.
   - **Notification history**, with do not disturb.
+
+  ![The control center: volume, microphone and per-monitor brightness sliders, with network, Bluetooth, do not disturb, power profile and keep awake toggles](docs/control-center.png)
+
 - **Notifications**: Vesper is a notification daemon, with popups (actions, images, links, replacing notifications) and a history that's kept across restarts.
 - **On-screen display** when the volume, microphone or brightness changes.
 - **Night light** (with an optional schedule) and **keep awake**.
