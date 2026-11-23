@@ -21,7 +21,7 @@ It deliberately leaves out the rest of a full shell (wallpaper-based colours, th
   | Active window | Icon and title of the focused window |
   | Launcher | Opens the launcher |
   | Clock | Any Qt date/time format; click for the calendar |
-  | System tray | App tray icons with their menus |
+  | System tray | App tray icons with their menus; optionally a drop-down with only pinned apps on the bar |
   | Volume / Microphone | Click for the audio panel, middle click to mute, scroll to change |
   | Media | Now playing (MPRIS); play/pause, next, previous |
   | Bluetooth | Status; click for the Bluetooth panel, right click to turn on/off |
@@ -183,7 +183,7 @@ hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("qs -c vesper ipc call brightness
 | `notifications` | `toggle`, `open`, `close`, `toggleDnd`, `setDnd <true/false>`, `clear`, `dismissPopups` |
 | `volume` | `up`, `down`, `toggleMute`, `set <0-100>`, `get` |
 | `mic` | `up`, `down`, `toggleMute` |
-| `media` | `playPause`, `next`, `previous` |
+| `media` | `playPause`, `play`, `pause`, `next`, `previous` |
 
 The volume step is set in Settings → General. Panels opened by IPC appear next to their bar widget on the focused monitor if it has one (e.g. the calendar under the clock). `notifications dismissPopups` hides the current popups; they stay in the history. Tab names for `openTab` are `bar`, `widgets`, `appearance`, `notifications`, `system`, `launcher`, `wallpaper` and `general`. `launcher search` opens the launcher with text already typed (e.g. `"100 usd to "`). For `wallpaper set`, pass `""` as the monitor to set every monitor.
 

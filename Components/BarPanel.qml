@@ -18,7 +18,9 @@ PanelWindow {
     property real panelWidth: Math.round(Style.fontSize * 24)
     // Where to put the panel when nothing anchors it: start | center | end
     property string defaultAlign: "end"
-    readonly property real padding: Math.round(Style.fontSize * 1.1)
+    property real padding: Math.round(Style.fontSize * 1.1)
+    // Space between the panel's children.
+    property real contentSpacing: Math.round(Style.fontSize * 0.8)
     default property alias content: column.data
 
     readonly property var barConfig: Settings.barFor(screen ? screen.name : "")
@@ -124,7 +126,7 @@ PanelWindow {
             x: root.padding
             y: root.padding
             width: parent.width - root.padding * 2
-            spacing: Math.round(Style.fontSize * 0.8)
+            spacing: root.contentSpacing
         }
     }
 }

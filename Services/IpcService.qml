@@ -173,6 +173,9 @@ Scope {
         target: "media"
 
         function playPause(): void { MediaService.togglePlaying(); }
+        // Pause everything that's playing (e.g. before locking).
+        function pause(): void { MediaService.pauseAll(); }
+        function play(): void { MediaService.play(); }
         function next(): void { MediaService.next(); }
         function previous(): void { MediaService.previous(); }
     }

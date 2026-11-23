@@ -110,6 +110,16 @@ ShellRoot {
         BluetoothPanel {}
     }
 
+    LazyLoader {
+        active: Panels.panel === "tray"
+        TrayDrawerPanel {}
+    }
+
+    LazyLoader {
+        active: Panels.panel === "trayMenu"
+        TrayMenuPanel {}
+    }
+
     Osd {}
 
     NotificationPopups {}

@@ -79,6 +79,9 @@ Singleton {
             maxPopups: 4,
             historyLimit: 100         // 0 = don't keep history
         },
+        tray: {
+            pinned: []                // app ids kept on the bar when the tray is a drop-down
+        },
         controlCenter: {
             // Which quick-toggle buttons the control center shows.
             buttons: {
@@ -150,6 +153,7 @@ Singleton {
     property var notifications: defaults.notifications
     property var calendar: defaults.calendar
     property var controlCenter: defaults.controlCenter
+    property var tray: defaults.tray
     property var brightness: defaults.brightness
     property var nightLight: defaults.nightLight
     property var systemMonitor: defaults.systemMonitor
@@ -158,7 +162,7 @@ Singleton {
     property var wallpaper: defaults.wallpaper
 
     // Section properties above, kept in sync by apply().
-    readonly property var sections: ["bar", "monitorOverrides", "appearance", "audio", "session", "osd", "notifications", "controlCenter", "calendar", "brightness", "nightLight", "systemMonitor", "privacy", "launcher", "wallpaper"]
+    readonly property var sections: ["bar", "monitorOverrides", "appearance", "audio", "session", "osd", "notifications", "controlCenter", "tray", "calendar", "brightness", "nightLight", "systemMonitor", "privacy", "launcher", "wallpaper"]
 
     property bool loaded: false
     // True while set()/reset() changes are waiting to be written. A file load

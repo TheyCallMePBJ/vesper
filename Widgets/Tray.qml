@@ -5,15 +5,22 @@ import Quickshell.Services.SystemTray
 import Quickshell.Widgets
 import qs.Commons
 import qs.Components
+import qs.Services
 
 // System tray. Left click: activate (or open the menu for menu-only items).
 // Right click: menu. Middle click: secondary action. Scroll: passed to the app.
+// As a drop-down, only pinned apps stay on the bar and an arrow opens the rest.
 BarWidget {
     id: root
 
-    readonly property var items: SystemTray.items.values.filter(i => !(root.options.hidePassive && i.status === Status.Passive))
+    readonly property bool drawer: root.options.drawer === true
+    readonly property var allItems: TrayService.items(root.options.hidePassive)
+    readonly property var barItems: drawer ? allItems.filter(i => TrayService.isPinned(i)) : allItems
+    readonly property bool hasHidden: drawer && barItems.length < allItems.length
+    readonly property string barPosition: Settings.barFor(screen ? screen.name : "").position
 
-    shown: items.length > 0
+    panelName: "tray"
+    shown: allItems.length > 0
     implicitWidth: shown ? grid.implicitWidth : 0
     implicitHeight: shown ? grid.implicitHeight : 0
 
@@ -24,12 +31,13 @@ BarWidget {
         spacing: 2
 
         Repeater {
-            model: root.items
+            model: root.barItems
 
             MouseArea {
                 id: trayItem
                 required property SystemTrayItem modelData
                 readonly property real size: Math.round(root.barThickness * 0.8)
+                readonly property bool menuOpen: Panels.panel === "trayMenu" && Panels.panelAnchor === trayItem
 
                 Layout.alignment: Qt.AlignCenter
                 implicitWidth: size
@@ -39,13 +47,11 @@ BarWidget {
                 acceptedButtons: Qt.LeftButton | Qt.RightButton | Qt.MiddleButton
 
                 onClicked: mouse => {
-                    if (mouse.button === Qt.RightButton || (mouse.button === Qt.LeftButton && modelData.onlyMenu)) {
-                        if (modelData.hasMenu)
-                            menu.open();
-                    } else if (mouse.button === Qt.MiddleButton) {
-                        modelData.secondaryActivate();
-                    } else {
-                        modelData.activate();
+                    if (mouse.button === Qt.RightButton || TrayService.activate(modelData, mouse.button)) {
+                        if (menuOpen)
+                            Panels.closePanel();
+                        else
+                            TrayService.openMenu(modelData, trayItem, root.screen);
                     }
                 }
                 onWheel: wheel => {
@@ -57,7 +63,7 @@ BarWidget {
                     anchors.fill: parent
                     radius: Style.radius
                     color: trayItem.pressed ? Theme.surfaceAlt : Theme.surface
-                    opacity: trayItem.containsMouse || menu.visible ? 1 : 0
+                    opacity: trayItem.containsMouse || trayItem.menuOpen ? 1 : 0
                     Behavior on opacity { NumberAnimation { duration: Style.animationDuration } }
                 }
 
@@ -67,15 +73,20 @@ BarWidget {
                     implicitSize: Style.barIconSize(root.fontSize)
                     asynchronous: true
                 }
-
-                QsMenuAnchor {
-                    id: menu
-                    menu: trayItem.modelData.menu
-                    anchor.item: trayItem
-                    anchor.edges: root.vertical ? Edges.Right : Edges.Bottom
-                    anchor.gravity: root.vertical ? Edges.Right : Edges.Bottom
-                }
             }
+        }
+
+        // Opens the drop-down with the apps that aren't pinned.
+        BarPill {
+            visible: root.hasHidden
+            Layout.alignment: Qt.AlignCenter
+            icon: ({ top: "chevron-down", bottom: "chevron-up", left: "chevron-right", right: "chevron-left" })[root.barPosition] || "chevron-down"
+            iconColor: root.panelOpen ? Theme.accent : Theme.textMuted
+            active: root.panelOpen
+            vertical: root.vertical
+            barThickness: root.barThickness
+            fontSize: root.fontSize
+            onClicked: root.togglePanel()
         }
     }
 }

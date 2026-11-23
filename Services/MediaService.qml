@@ -41,6 +41,16 @@ Singleton {
         if (hasPlayer && player.canTogglePlaying)
             player.togglePlaying();
     }
+    function play() {
+        if (hasPlayer && player.canPlay)
+            player.play();
+    }
+    // Every player that's playing, not just the one the widgets show.
+    function pauseAll() {
+        for (const p of players)
+            if (p && p.isPlaying && p.canPause)
+                p.pause();
+    }
     function next() {
         if (hasPlayer && player.canGoNext)
             player.next();

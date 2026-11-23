@@ -68,6 +68,8 @@ Singleton {
             description: "Tray icons of running apps. Right click for their menu.",
             allowMultiple: false,
             options: [
+                { key: "drawer", type: "bool", label: "Show as a drop-down", default: false,
+                  hint: "Only pinned apps stay on the bar; an arrow opens the rest. Pin an app from its right-click menu." },
                 { key: "hidePassive", type: "bool", label: "Hide passive items", default: false,
                   hint: "Some apps mark their icon as passive when idle." }
             ]
