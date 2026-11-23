@@ -84,7 +84,8 @@ Singleton {
 
     Process {
         id: ddcDetect
-        command: ["ddcutil", "detect", "--brief"]
+        // Exit code 127 (no ddcutil) is normal on laptops: stay quiet.
+        command: ["sh", "-c", "command -v ddcutil >/dev/null || exit 127; exec ddcutil detect --brief"]
         stdout: StdioCollector {
             onStreamFinished: {
                 // Blocks of "I2C bus: /dev/i2c-N" ... "DRM connector: cardX-DP-4"
@@ -99,8 +100,8 @@ Singleton {
             }
         }
         onExited: code => {
-            if (code !== 0)
-                Logger.w("Brightness", "ddcutil detect failed; is ddcutil installed and the i2c-dev module loaded?");
+            if (code !== 0 && code !== 127)
+                Logger.w("Brightness", "ddcutil detect failed; is the i2c-dev module loaded?");
         }
     }
 

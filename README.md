@@ -1,10 +1,10 @@
 # Vesper
 
-A small desktop shell for [Hyprland](https://hypr.land), built with [Quickshell](https://quickshell.org): a configurable bar, with the panels, notifications and system controls that go with it.
+A small desktop shell for [Hyprland](https://hypr.land), built with [Quickshell](https://quickshell.org): a configurable bar, with the panels, notifications, launcher and system controls that go with it.
 
 ![Vesper's bar with the settings window open](docs/screenshot.png)
 
-Vesper is inspired by noctalia-shell v4. The bar is made of widgets you arrange from a settings window, and those widgets open panels for audio, network, Bluetooth, the calendar and a control center. Vesper is also your notification daemon and on-screen display, and handles brightness (including external monitors over DDC/CI), night light and keep awake.
+Vesper is inspired by noctalia-shell v4. The bar is made of widgets you arrange from a settings window, and those widgets open panels for audio, network, Bluetooth, the calendar and a control center. Vesper is also your notification daemon, on-screen display, app launcher (with a calculator and unit and currency conversion) and wallpaper, and handles brightness (including external monitors over DDC/CI), night light and keep awake.
 
 It deliberately leaves out the rest of a full shell (wallpaper-based colours, theming other apps, a dock, a lock screen) to stay small and easy to follow. Themes only change how Vesper itself looks.
 
@@ -19,12 +19,13 @@ It deliberately leaves out the rest of a full shell (wallpaper-based colours, th
   |---|---|
   | Workspaces | Click to switch; optionally only the current monitor's workspaces |
   | Active window | Icon and title of the focused window |
+  | Launcher | Opens the launcher |
   | Clock | Any Qt date/time format; click for the calendar |
   | System tray | App tray icons with their menus |
   | Volume / Microphone | Click for the audio panel, middle click to mute, scroll to change |
   | Media | Now playing (MPRIS); play/pause, next, previous |
   | Bluetooth | Status; click for the Bluetooth panel, right click to turn on/off |
-  | Network / VPN | Wired and Wi-Fi status / VPN status; click for the network panel |
+  | Network | Wired or Wi-Fi status, with a shield while a VPN is connected; click for the network panel |
   | Brightness | This screen's brightness (laptop backlight or external monitor over DDC/CI); scroll to change |
   | System monitor | CPU, memory, temperatures, GPU, disk and network speed |
   | Night light / Keep awake | Click to toggle |
@@ -42,13 +43,15 @@ It deliberately leaves out the rest of a full shell (wallpaper-based colours, th
 - **Panels** that open from the bar:
   - **Calendar**: month view, optional week numbers.
   - **Audio**: output and input volume, pick the default device, per-app volume.
-  - **Control center**: volume, mic and brightness sliders, network / Bluetooth / do not disturb / power profile / night light / keep awake toggles, the current media player, and shortcuts to settings and the session menu.
+  - **Control center**: volume, mic and brightness sliders, network / Bluetooth / do not disturb / power profile / night light / keep awake buttons (choose which in Settings → General), the current media player, and shortcuts to settings and the session menu.
   - **Network**: wired status, Wi-Fi on/off and networks (with password entry), VPN connections.
   - **Bluetooth**: on/off, connect and disconnect paired devices, pair new ones.
   - **Notification history**, with do not disturb.
 
   ![The control center: volume, microphone and per-monitor brightness sliders, with network, Bluetooth, do not disturb, power profile and keep awake toggles](docs/control-center.png)
 
+- **Launcher**: search apps (most used first), or type a sum or conversion: `2^10`, `sqrt 2`, `10 km to mi`, `72 f to c`, `1 GiB in MB`, `100 usd to eur`. Enter launches the app or copies the result.
+- **Wallpaper** with a picker for your wallpaper folder, a crossfade when it changes, and the same or a different image per monitor.
 - **Notifications**: Vesper is a notification daemon, with popups (actions, images, links, replacing notifications) and a history that's kept across restarts.
 - **On-screen display** when the volume, microphone or brightness changes.
 - **Night light** (with an optional schedule) and **keep awake**.
@@ -66,12 +69,13 @@ It deliberately leaves out the rest of a full shell (wallpaper-based colours, th
 
 Optional, for the widgets that use them:
 
-- **NetworkManager** (Network and VPN widgets, network panel)
+- **NetworkManager** (Network widget, network panel)
 - **BlueZ** (Bluetooth widget and panel)
 - **ddcutil** for external monitor brightness (the monitor needs DDC/CI on; you may need to load the `i2c-dev` module), **brightnessctl** for laptop screens
 - **hyprsunset** for night light. Vesper starts and stops it, so don't also run it yourself.
 - **UPower** (Battery widget) and **power-profiles-daemon** (Power profile widget)
 - **pavucontrol**, which the volume and microphone widgets open on right click by default (changeable)
+- **curl** for currency rates (frankfurter.dev) and **wl-clipboard** to copy calculator results
 
 Vesper is a notification daemon, so stop any other one (mako, dunst, swaync, another shell). If one is running, Vesper waits and takes over once it exits. To keep your own daemon, turn off Settings → Notifications → Receive notifications.
 
@@ -156,6 +160,7 @@ Lock, suspend, log out, reboot and shut down run configurable commands (Settings
 Call these with `qs -c vesper ipc call <target> <function>`, e.g. in `binds.lua`:
 
 ```lua
+hl.bind("SUPER + SPACE", hl.dsp.exec_cmd("qs -c vesper ipc call launcher toggle"))
 hl.bind("SUPER + COMMA", hl.dsp.exec_cmd("qs -c vesper ipc call settings toggle"))
 hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("qs -c vesper ipc call volume up"))
 hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("qs -c vesper ipc call brightness up"))
@@ -165,6 +170,8 @@ hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("qs -c vesper ipc call brightness
 |---|---|
 | `settings` | `toggle`, `open`, `close`, `openTab <name>`, `reload` |
 | `session` | `toggle`, `open`, `close` |
+| `launcher` | `toggle`, `open`, `close`, `search <text>` |
+| `wallpaper` | `toggle`, `open`, `close`, `set <path> <monitor>`, `random`, `clear` |
 | `calendar` | `toggle`, `open`, `close` |
 | `audio` | `toggle`, `open`, `close` |
 | `controlCenter` | `toggle`, `open`, `close` |
@@ -178,7 +185,7 @@ hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("qs -c vesper ipc call brightness
 | `mic` | `up`, `down`, `toggleMute` |
 | `media` | `playPause`, `next`, `previous` |
 
-The volume step is set in Settings → General. Panels opened by IPC appear next to their bar widget on the focused monitor if it has one (e.g. the calendar under the clock). `notifications dismissPopups` hides the current popups; they stay in the history. Tab names for `openTab` are `bar`, `widgets`, `appearance`, `notifications`, `system` and `general`.
+The volume step is set in Settings → General. Panels opened by IPC appear next to their bar widget on the focused monitor if it has one (e.g. the calendar under the clock). `notifications dismissPopups` hides the current popups; they stay in the history. Tab names for `openTab` are `bar`, `widgets`, `appearance`, `notifications`, `system`, `launcher`, `wallpaper` and `general`. `launcher search` opens the launcher with text already typed (e.g. `"100 usd to "`). For `wallpaper set`, pass `""` as the monitor to set every monitor.
 
 ## Credits
 

@@ -10,8 +10,16 @@ import qs.Modules.SessionMenu
 import qs.Modules.Panels
 import qs.Modules.OSD
 import qs.Modules.Notifications
+import qs.Modules.Launcher
+import qs.Modules.Wallpaper
 
 ShellRoot {
+    // Wallpaper, on the background layer.
+    Variants {
+        model: WallpaperService.enabled ? Quickshell.screens : []
+        Wallpaper {}
+    }
+
     // One bar per screen, limited to bar.monitors if that list isn't empty.
     Variants {
         model: {
@@ -31,6 +39,16 @@ ShellRoot {
     LazyLoader {
         active: Panels.sessionOpen
         SessionMenu {}
+    }
+
+    LazyLoader {
+        active: Panels.launcherOpen
+        Launcher {}
+    }
+
+    LazyLoader {
+        active: Panels.wallpaperOpen
+        WallpaperPicker {}
     }
 
     // While a bar panel is open, a click on any other screen closes it (the

@@ -79,6 +79,17 @@ Singleton {
             maxPopups: 4,
             historyLimit: 100         // 0 = don't keep history
         },
+        controlCenter: {
+            // Which quick-toggle buttons the control center shows.
+            buttons: {
+                network: true,
+                bluetooth: true,
+                doNotDisturb: true,
+                powerProfile: true,
+                nightLight: true,
+                keepAwake: true
+            }
+        },
         calendar: {
             firstDayOfWeek: -1,       // -1 = from locale, 0 = Sunday, 1 = Monday, ... 6 = Saturday
             showWeekNumbers: false
@@ -106,6 +117,22 @@ Singleton {
             // Apps that record audio all the time and shouldn't count (matched
             // against the PipeWire app or node name, case-insensitive).
             ignoredApps: ["easyeffects", "pavucontrol", "cava"]
+        },
+        launcher: {
+            sortByUsage: true,        // apps you launch often come first
+            calculator: true,         // maths and unit conversion in the search box
+            currency: true,           // currency conversion (fetches rates from frankfurter.dev)
+            terminal: "kitty -e",     // for apps that run in a terminal
+            launchPrefix: ""          // e.g. "uwsm app --" or "app2unit --"
+        },
+        wallpaper: {
+            enabled: true,            // Vesper draws the wallpaper (once you've picked one)
+            directory: "~/Pictures/Wallpapers",
+            fillMode: "crop",         // crop | fit | stretch | center | tile
+            transition: 800,          // ms crossfade; 0 = none
+            sameOnAllMonitors: true,  // picking one sets every monitor
+            // Chosen images: { "": path for every monitor, "<monitor>": path }
+            paths: {}
         }
     })
 
@@ -122,13 +149,16 @@ Singleton {
     property var osd: defaults.osd
     property var notifications: defaults.notifications
     property var calendar: defaults.calendar
+    property var controlCenter: defaults.controlCenter
     property var brightness: defaults.brightness
     property var nightLight: defaults.nightLight
     property var systemMonitor: defaults.systemMonitor
     property var privacy: defaults.privacy
+    property var launcher: defaults.launcher
+    property var wallpaper: defaults.wallpaper
 
     // Section properties above, kept in sync by apply().
-    readonly property var sections: ["bar", "monitorOverrides", "appearance", "audio", "session", "osd", "notifications", "calendar", "brightness", "nightLight", "systemMonitor", "privacy"]
+    readonly property var sections: ["bar", "monitorOverrides", "appearance", "audio", "session", "osd", "notifications", "controlCenter", "calendar", "brightness", "nightLight", "systemMonitor", "privacy", "launcher", "wallpaper"]
 
     property bool loaded: false
     // True while set()/reset() changes are waiting to be written. A file load

@@ -51,6 +51,32 @@ ColumnLayout {
     }
 
     SettingsSection {
+        title: "Control center"
+        description: "Which buttons the control center shows."
+
+        Repeater {
+            model: [
+                { key: "network", label: "Network", hint: "Wi-Fi on/off, or the network panel when wired." },
+                { key: "bluetooth", label: "Bluetooth", hint: "" },
+                { key: "doNotDisturb", label: "Do not disturb", hint: "" },
+                { key: "powerProfile", label: "Power profile", hint: "Needs power-profiles-daemon." },
+                { key: "nightLight", label: "Night light", hint: "Only shown when hyprsunset is installed." },
+                { key: "keepAwake", label: "Keep awake", hint: "" }
+            ]
+
+            SettingsRow {
+                required property var modelData
+                label: modelData.label
+                description: modelData.hint
+                VToggle {
+                    value: (Settings.controlCenter.buttons || {})[modelData.key] !== false
+                    onChangedByUser: v => Settings.set(`controlCenter.buttons.${modelData.key}`, v)
+                }
+            }
+        }
+    }
+
+    SettingsSection {
         title: "Audio"
 
         SettingsRow {

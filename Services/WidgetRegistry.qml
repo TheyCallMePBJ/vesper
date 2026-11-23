@@ -14,17 +14,6 @@ Singleton {
     id: root
 
     readonly property var widgets: ({
-        "Vpn": {
-            component: "Vpn.qml",
-            name: "VPN",
-            icon: "shield-check",
-            description: "VPN status (NetworkManager VPNs). Click for the network panel.",
-            allowMultiple: false,
-            options: [
-                { key: "hideWhenOff", type: "bool", label: "Hide when no VPN is connected", default: true },
-                { key: "showName", type: "bool", label: "Show VPN name", default: false }
-            ]
-        },
         "Workspaces": {
             component: "Workspaces.qml",
             name: "Workspaces",
@@ -286,6 +275,16 @@ Singleton {
                 { key: "showMic", type: "bool", label: "Microphone", default: true },
                 { key: "showCamera", type: "bool", label: "Camera", default: true },
                 { key: "showScreen", type: "bool", label: "Screen sharing", default: true }
+            ]
+        },
+        "Launcher": {
+            component: "Launcher.qml",
+            name: "Launcher",
+            icon: "search",
+            description: "Opens the app launcher, which also does sums and unit and currency conversion.",
+            allowMultiple: false,
+            options: [
+                { key: "icon", type: "text", label: "Icon", default: "search", hint: "Tabler icon name (tabler.io/icons)." }
             ]
         },
         "SessionButton": {

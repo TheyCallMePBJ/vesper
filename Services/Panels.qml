@@ -17,6 +17,14 @@ Singleton {
     property bool sessionOpen: false
     property ShellScreen sessionScreen: null
 
+    property bool launcherOpen: false
+    property ShellScreen launcherScreen: null
+    // Text the launcher starts with (IPC "launcher search").
+    property string launcherQuery: ""
+
+    property bool wallpaperOpen: false
+    property ShellScreen wallpaperScreen: null
+
     // The one bar panel that's open ("calendar", "audio", "notifications",
     // "controlCenter"), or "". It opens next to `panelAnchor`: the widget
     // that opened it, or one registered for it on that screen's bar.
@@ -100,10 +108,45 @@ Singleton {
             openSettings(screen);
     }
 
+    // Full-screen overlays: only one at a time.
+    function closeOverlays() {
+        sessionOpen = false;
+        launcherOpen = false;
+        wallpaperOpen = false;
+        closePanel();
+    }
+
+    function openLauncher(screen, query) {
+        launcherQuery = query || "";
+        closeOverlays();
+        launcherScreen = screen || focusedScreen();
+        launcherOpen = true;
+    }
+
+    function toggleLauncher(screen) {
+        if (launcherOpen)
+            launcherOpen = false;
+        else
+            openLauncher(screen);
+    }
+
+    function openWallpaper(screen) {
+        closeOverlays();
+        wallpaperScreen = screen || focusedScreen();
+        wallpaperOpen = true;
+    }
+
+    function toggleWallpaper(screen) {
+        if (wallpaperOpen)
+            wallpaperOpen = false;
+        else
+            openWallpaper(screen);
+    }
+
     function openSession(screen) {
+        closeOverlays();
         sessionScreen = screen || focusedScreen();
         sessionOpen = true;
-        closePanel();
     }
 
     function closeSession() {

@@ -21,6 +21,8 @@ PanelWindow {
         { id: "appearance", label: "Appearance", icon: "palette" },
         { id: "notifications", label: "Notifications", icon: "bell" },
         { id: "system", label: "System", icon: "device-desktop" },
+        { id: "launcher", label: "Launcher", icon: "search" },
+        { id: "wallpaper", label: "Wallpaper", icon: "photo" },
         { id: "general", label: "General", icon: "adjustments-horizontal" }
     ]
     function showRequestedTab() {
@@ -191,7 +193,7 @@ PanelWindow {
                         x: Math.round(Style.fontSize * 1.6)
                         y: Math.round(Style.fontSize * 0.8)
                         width: flick.width - x * 2
-                        sourceComponent: ({ bar: barTab, widgets: widgetsTab, appearance: appearanceTab, notifications: notificationsTab, system: systemTab, general: generalTab })[root.currentTab]
+                        sourceComponent: ({ bar: barTab, widgets: widgetsTab, appearance: appearanceTab, notifications: notificationsTab, system: systemTab, launcher: launcherTab, wallpaper: wallpaperTab, general: generalTab })[root.currentTab]
                         onLoaded: flick.contentY = 0
                     }
                 }
@@ -204,5 +206,7 @@ PanelWindow {
     Component { id: appearanceTab; AppearanceTab {} }
     Component { id: notificationsTab; NotificationsTab {} }
     Component { id: systemTab; SystemTab {} }
+    Component { id: launcherTab; LauncherTab {} }
+    Component { id: wallpaperTab; WallpaperTab {} }
     Component { id: generalTab; GeneralTab {} }
 }

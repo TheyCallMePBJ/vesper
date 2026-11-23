@@ -154,10 +154,18 @@ BarPanel {
         rowSpacing: Math.round(Style.fontSize * 0.5)
         columnSpacing: Math.round(Style.fontSize * 0.5)
 
+        // Hidden when every button is turned off in settings.
+        visible: Object.values(Settings.controlCenter.buttons || {}).some(v => v !== false)
+
+        function wanted(name) {
+            return (Settings.controlCenter.buttons || {})[name] !== false;
+        }
+
         readonly property var adapter: Bluetooth.defaultAdapter
         readonly property var connectedDevices: adapter ? adapter.devices.values.filter(d => d.connected) : []
 
         QuickToggle {
+            visible: toggles.wanted("network")
             icon: NetworkService.icon
             label: NetworkService.hasWifi && !NetworkService.wiredDevice ? "Wi-Fi" : "Network"
             detail: !NetworkService.connected ? (NetworkService.hasWifi && !NetworkService.wifiEnabled ? "Wi-Fi off" : "Disconnected")
@@ -175,7 +183,7 @@ BarPanel {
         }
 
         QuickToggle {
-            visible: !!toggles.adapter
+            visible: toggles.wanted("bluetooth") && !!toggles.adapter
             icon: toggles.adapter && toggles.adapter.enabled ? (toggles.connectedDevices.length > 0 ? "bluetooth-connected" : "bluetooth") : "bluetooth-off"
             label: "Bluetooth"
             detail: !toggles.adapter || !toggles.adapter.enabled ? "Off"
@@ -188,6 +196,7 @@ BarPanel {
         }
 
         QuickToggle {
+            visible: toggles.wanted("doNotDisturb")
             icon: NotificationService.doNotDisturb ? "bell-off" : "bell"
             label: "Do not disturb"
             detail: NotificationService.doNotDisturb ? "On" : "Off"
@@ -196,6 +205,7 @@ BarPanel {
         }
 
         QuickToggle {
+            visible: toggles.wanted("powerProfile")
             readonly property int profile: PowerProfiles.profile
             readonly property var order: PowerProfiles.hasPerformanceProfile
                 ? [PowerProfile.PowerSaver, PowerProfile.Balanced, PowerProfile.Performance]
@@ -208,7 +218,7 @@ BarPanel {
         }
 
         QuickToggle {
-            visible: NightLightService.installed
+            visible: toggles.wanted("nightLight") && NightLightService.installed
             icon: NightLightService.enabled ? "moon-stars" : "moon"
             label: "Night light"
             detail: !NightLightService.enabled ? "Off"
@@ -219,6 +229,7 @@ BarPanel {
         }
 
         QuickToggle {
+            visible: toggles.wanted("keepAwake")
             icon: KeepAwakeService.enabled ? "coffee" : "coffee-off"
             label: "Keep awake"
             detail: KeepAwakeService.enabled ? "On" : "Off"

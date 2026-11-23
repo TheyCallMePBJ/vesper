@@ -5,7 +5,7 @@ import Quickshell
 import qs.Commons
 
 // Runs the configurable bar actions (scroll / right-click / middle-click on
-// empty bar space). Actions whose feature isn't built yet just log.
+// empty bar space).
 Singleton {
     id: root
 
@@ -76,6 +76,8 @@ Singleton {
         { value: "settings", label: "Open settings" },
         { value: "sessionMenu", label: "Open session menu" },
         { value: "controlCenter", label: "Open control center" },
+        { value: "launcher", label: "Open launcher" },
+        { value: "wallpaper", label: "Open wallpaper picker" },
         { value: "command", label: "Run a command" }
     ]
 
@@ -99,7 +101,10 @@ Singleton {
             Panels.togglePanel("controlCenter", null, screen);
             return;
         case "launcher":
-            Logger.d("BarActions", `Click action "${clickConfig.action}" isn't available yet.`);
+            Panels.toggleLauncher(screen);
+            return;
+        case "wallpaper":
+            Panels.toggleWallpaper(screen);
             return;
         default:
             Logger.w("BarActions", `Unknown click action "${clickConfig.action}".`);

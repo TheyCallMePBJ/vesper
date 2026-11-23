@@ -14,7 +14,7 @@ Scope {
         function toggle(): void { Panels.toggleSettings(null); }
         function open(): void { Panels.openSettings(null); }
         function close(): void { Panels.closeSettings(); }
-        // Open on a tab: bar, widgets, appearance, notifications, system, general.
+        // Open on a tab: bar, widgets, appearance, notifications, system, launcher, wallpaper, general.
         function openTab(tab: string): void { Panels.openSettingsTab(tab, null); }
         // Re-read settings.json.
         function reload(): void { Settings.reload(); }
@@ -26,6 +26,32 @@ Scope {
         function toggle(): void { Panels.toggleSession(null); }
         function open(): void { Panels.openSession(null); }
         function close(): void { Panels.closeSession(); }
+    }
+
+    IpcHandler {
+        target: "launcher"
+
+        // The app launcher / calculator, on the focused monitor.
+        function toggle(): void { Panels.toggleLauncher(null); }
+        function open(): void { Panels.openLauncher(null); }
+        function close(): void { Panels.launcherOpen = false; }
+        // Open with this text already typed, e.g. "=" or "100 usd to ".
+        function search(text: string): void { Panels.openLauncher(null, text); }
+    }
+
+    IpcHandler {
+        target: "wallpaper"
+
+        // The wallpaper picker, on the focused monitor.
+        function toggle(): void { Panels.toggleWallpaper(null); }
+        function open(): void { Panels.openWallpaper(null); }
+        function close(): void { Panels.wallpaperOpen = false; }
+        // Set an image (full path) on every monitor, or on one: set "<path>" "DP-1".
+        function set(path: string, monitor: string): void { WallpaperService.set(path, monitor); }
+        // A random image from the wallpaper folder.
+        function random(): void { WallpaperService.random(""); }
+        // Stop drawing a wallpaper.
+        function clear(): void { WallpaperService.clear(); }
     }
 
     IpcHandler {
