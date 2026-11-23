@@ -153,13 +153,13 @@ Scope {
                 opacity: root.shown ? 1 : 0
                 Behavior on opacity { NumberAnimation { duration: Style.animationDuration } }
 
+                // Spans the card lengthways and is centred across it, so the
+                // icon, bar and number share the card's centre line.
                 LineLayout {
-                    anchors.fill: parent
-                    anchors.margins: card.pad
-                    anchors.leftMargin: win.vertical ? card.pad : card.pad * 1.4
-                    anchors.rightMargin: win.vertical ? card.pad : card.pad * 1.4
-                    anchors.topMargin: win.vertical ? card.pad * 1.4 : card.pad
-                    anchors.bottomMargin: win.vertical ? card.pad * 1.4 : card.pad
+                    readonly property real endPad: Math.round(card.pad * 1.4)
+                    anchors.centerIn: parent
+                    width: win.vertical ? implicitWidth : parent.width - endPad * 2
+                    height: win.vertical ? parent.height - endPad * 2 : implicitHeight
                     vertical: win.vertical
                     spacing: Math.round(Style.fontSize * 0.8)
 
@@ -167,7 +167,7 @@ Scope {
                         Layout.alignment: Qt.AlignCenter
                         icon: root.icon
                         color: root.muted ? Theme.textMuted : Theme.text
-                        size: Style.fontSize * 1.5
+                        size: Math.round(Style.fontSize * 1.5)
                     }
 
                     // Level bar.
@@ -193,13 +193,31 @@ Scope {
                         }
                     }
 
+                    // Wide enough for "100%", so the bar doesn't move as the number changes.
                     VText {
+                        id: percent
                         Layout.alignment: Qt.AlignCenter
-                        Layout.preferredWidth: win.vertical ? -1 : Style.fontSize * 2.8
+                        Layout.preferredWidth: win.vertical ? -1 : Math.ceil(widest.advanceWidth)
                         horizontalAlignment: win.vertical ? Text.AlignHCenter : Text.AlignRight
-                        text: Math.round(root.level * 100)
+                        text: `${Math.round(root.level * 100)}%`
                         color: root.muted ? Theme.textMuted : Theme.text
                         font.pixelSize: win.vertical ? Style.fontSize * 0.85 : Style.fontSize
+                        font.features: { "tnum": 1 }
+                        // Centre the digits themselves, not the line box: digits
+                        // have no descenders, so a centred line box sits them low.
+                        transform: Translate {
+                            y: win.vertical ? 0 : Math.round((percentMetrics.descent - percentMetrics.ascent) / 2 - (widest.tightBoundingRect.y + widest.tightBoundingRect.height / 2))
+                        }
+
+                        TextMetrics {
+                            id: widest
+                            font: percent.font
+                            text: "100%"
+                        }
+                        FontMetrics {
+                            id: percentMetrics
+                            font: percent.font
+                        }
                     }
                 }
             }

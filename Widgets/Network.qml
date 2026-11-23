@@ -17,9 +17,13 @@ BarWidget {
     readonly property real pad: Math.round(fontSize * 0.35)
     readonly property real iconSize: Style.barIconSize(fontSize)
 
+    // Same size as a BarPill across the bar, so the icon lands on the same
+    // pixel row as the icons in other widgets.
+    readonly property real cell: Math.round(barThickness * 0.8)
+
     panelName: "network"
-    implicitWidth: content.implicitWidth
-    implicitHeight: content.implicitHeight
+    implicitWidth: vertical ? cell : content.implicitWidth
+    implicitHeight: vertical ? content.implicitHeight : cell
 
     MouseArea {
         id: mouse
