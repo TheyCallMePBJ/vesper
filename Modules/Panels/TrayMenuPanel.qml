@@ -19,6 +19,7 @@ BarPanel {
         Layout.fillWidth: true
         item: TrayService.menuItem
         maxHeight: root.height * 0.8
+        Component.onCompleted: forceActiveFocus()
         onDone: Panels.closePanel()
     }
 
