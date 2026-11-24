@@ -10,7 +10,7 @@ ColumnLayout {
 
     SettingsSection {
         title: "Session menu"
-        description: "Commands run by the session menu's buttons. Each runs with sh -c."
+        description: "Commands run by the session menu's buttons (each runs with sh -c), and the key that runs each one while the menu is open. Click a key and press a new one; Backspace resets it."
 
         SettingsRow {
             label: "Countdown"
@@ -28,25 +28,30 @@ ColumnLayout {
             label: "Lock"
             description: "Vesper has no lock screen. Set your locker here (e.g. hyprlock); the Lock button is hidden while this is empty."
             key: "lockCommand"
+            actionId: "lock"
             placeholder: "e.g. hyprlock"
         }
         CommandRow {
             label: "Suspend"
             key: "suspendCommand"
+            actionId: "suspend"
         }
         CommandRow {
             label: "Log out"
             description: "Empty exits Hyprland."
             key: "logoutCommand"
+            actionId: "logout"
             placeholder: "Exit Hyprland"
         }
         CommandRow {
             label: "Reboot"
             key: "rebootCommand"
+            actionId: "reboot"
         }
         CommandRow {
             label: "Shut down"
             key: "shutdownCommand"
+            actionId: "shutdown"
         }
     }
 
@@ -116,6 +121,7 @@ ColumnLayout {
     component CommandRow: SettingsRow {
         id: commandRow
         property string key
+        property string actionId
         property string placeholder: ""
 
         VTextField {
@@ -123,6 +129,9 @@ ColumnLayout {
             value: Settings.session[commandRow.key] || ""
             placeholderText: commandRow.placeholder
             onChangedByUser: t => Settings.set(`session.${commandRow.key}`, t)
+        }
+        KeyCapture {
+            actionId: commandRow.actionId
         }
     }
 }

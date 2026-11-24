@@ -60,7 +60,9 @@ Singleton {
             suspendCommand: "systemctl suspend",
             logoutCommand: "",        // empty = exit Hyprland
             rebootCommand: "systemctl reboot",
-            shutdownCommand: "systemctl poweroff"
+            shutdownCommand: "systemctl poweroff",
+            // Key that runs each button while the session menu is open.
+            keys: { lock: "L", suspend: "S", logout: "E", reboot: "R", shutdown: "P" }
         },
         osd: {
             enabled: true,            // popup when volume or mic changes
