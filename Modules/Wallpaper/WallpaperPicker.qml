@@ -40,7 +40,8 @@ PanelWindow {
 
     readonly property real cellWidth: Math.round(Style.fontSize * 15)
     readonly property real cellHeight: Math.round(cellWidth * 0.62 + Style.fontSize * 1.8)
-    readonly property int columns: 4
+    // Up to 4 columns, fewer on narrow (e.g. portrait) screens.
+    readonly property int columns: Math.max(1, Math.min(4, Math.floor((width - 40 - Math.round(Style.fontSize * 1.1) * 2 - 8) / cellWidth)))
 
     function close() {
         Panels.wallpaperOpen = false;
