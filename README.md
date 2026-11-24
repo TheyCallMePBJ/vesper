@@ -55,7 +55,7 @@ It deliberately leaves out the rest of a full shell (wallpaper-based colours, th
 - **Notifications**: Vesper is a notification daemon, with popups (actions, images, links, replacing notifications) and a history that's kept across restarts.
 - **On-screen display** when the volume, microphone or brightness changes.
 - **Night light** (with an optional schedule) and **keep awake**.
-- **Session menu**: suspend, log out, reboot, shut down (and lock, if you set a lock command), with keyboard shortcuts and a countdown before destructive actions.
+- **Session menu**: suspend, log out, reboot, shut down (and lock, if you set a lock command), with keyboard shortcuts (changeable in Settings → General) and a countdown before destructive actions.
 - **Settings window** for everything above. Changes apply immediately and are saved to a plain JSON file, which also reloads live if you edit it by hand.
 - **Themes**: Catppuccin Mocha and Latte, Compline and Lauds, Gruvbox Dark, Nord, Rosé Pine and Tokyo Night built in, plus your own.
 - **Configurable bar actions**: what scrolling, right-clicking and middle-clicking empty bar space does. Scrolling can step once per wheel notch or once per swipe.
