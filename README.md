@@ -50,7 +50,7 @@ It deliberately leaves out the rest of a full shell (wallpaper-based colours, th
 
   ![The control center: volume, microphone and per-monitor brightness sliders, with network, Bluetooth, do not disturb, power profile and keep awake toggles](docs/control-center.png)
 
-- **Launcher**: search apps (most used first), or type a sum or conversion: `2^10`, `sqrt 2`, `10 km to mi`, `72 f to c`, `1 GiB in MB`, `100 usd to eur`. Enter launches the app or copies the result.
+- **Launcher**: search apps (most used first), or type a sum or conversion: `2^10`, `sqrt 2`, `10 km to mi`, `72 f to c`, `1 GiB in MB`, `100 usd to eur`, `50 aed in inr`, `0.1 btc to usd`. Currency conversion covers about 160 currencies, gold and silver, and major cryptocurrencies. Enter launches the app or copies the result.
 - **Wallpaper** with a picker for your wallpaper folder, a crossfade when it changes, and the same or a different image per monitor.
 - **Notifications**: Vesper is a notification daemon, with popups (actions, images, links, replacing notifications) and a history that's kept across restarts.
 - **On-screen display** when the volume, microphone or brightness changes.

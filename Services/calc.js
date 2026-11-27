@@ -331,7 +331,7 @@ function findTemperature(name) {
 
 // ---- Currencies ------------------------------------------------------------
 
-const CURRENCY_SYMBOLS = { "$": "USD", "€": "EUR", "£": "GBP", "¥": "JPY", "₹": "INR", "₩": "KRW", "₽": "RUB", "₺": "TRY", "₪": "ILS", "฿": "THB", "₫": "VND", "₱": "PHP" };
+const CURRENCY_SYMBOLS = { "$": "USD", "€": "EUR", "£": "GBP", "¥": "JPY", "₹": "INR", "₩": "KRW", "₽": "RUB", "₺": "TRY", "₪": "ILS", "฿": "THB", "₫": "VND", "₱": "PHP", "₦": "NGN", "₴": "UAH", "₿": "BTC" };
 const CURRENCY_NAMES = {
     dollar: "USD", dollars: "USD", usd: "USD", buck: "USD", bucks: "USD",
     euro: "EUR", euros: "EUR",
@@ -340,11 +340,36 @@ const CURRENCY_NAMES = {
     yuan: "CNY", renminbi: "CNY", rmb: "CNY", won: "KRW",
     franc: "CHF", francs: "CHF", real: "BRL", reais: "BRL",
     peso: "MXN", pesos: "MXN", rand: "ZAR", lira: "TRY", zloty: "PLN", forint: "HUF",
-    krona: "SEK", kronor: "SEK", krone: "NOK", kroner: "NOK"
+    krona: "SEK", kronor: "SEK", krone: "NOK", kroner: "NOK",
+    dirham: "AED", dirhams: "AED", riyal: "SAR", riyals: "SAR",
+    ruble: "RUB", rubles: "RUB", rouble: "RUB", roubles: "RUB", hryvnia: "UAH",
+    shekel: "ILS", shekels: "ILS", baht: "THB", ringgit: "MYR", rupiah: "IDR",
+    naira: "NGN", taka: "BDT", dong: "VND",
+    bitcoin: "BTC", bitcoins: "BTC", ethereum: "ETH", ether: "ETH",
+    gold: "XAU", silver: "XAG", platinum: "XPT", palladium: "XPD"
 };
 // Codes the rates source is known to cover, so "5 m to cm" isn't taken for a
 // currency before rates have loaded.
-const KNOWN_CODES = ["AUD", "BGN", "BRL", "CAD", "CHF", "CNY", "CZK", "DKK", "EUR", "GBP", "HKD", "HUF", "IDR", "ILS", "INR", "ISK", "JPY", "KRW", "MXN", "MYR", "NOK", "NZD", "PHP", "PLN", "RON", "SEK", "SGD", "THB", "TRY", "USD", "ZAR"];
+// (Frankfurter's v2 list: world currencies, precious metals (XAU gold, XAG
+// silver, XPT, XPD) and cryptocurrencies.)
+const KNOWN_CODES = [
+    "AED", "AFN", "ALL", "AMD", "ANG", "AOA", "ARS", "AUD", "AWG", "AZN", "BAM", "BBD", "BDT",
+    "BHD", "BIF", "BMD", "BND", "BOB", "BRL", "BSD", "BTN", "BWP", "BYN", "BZD", "CAD", "CDF",
+    "CHF", "CLP", "CNH", "CNY", "COP", "CRC", "CUP", "CVE", "CZK", "DJF", "DKK", "DOP", "DZD",
+    "EGP", "ERN", "ETB", "EUR", "FJD", "FKP", "GBP", "GEL", "GGP", "GHS", "GIP", "GMD", "GNF",
+    "GTQ", "GYD", "HKD", "HNL", "HTG", "HUF", "IDR", "ILS", "IMP", "INR", "IQD", "IRR", "ISK",
+    "JEP", "JMD", "JOD", "JPY", "KES", "KGS", "KHR", "KMF", "KPW", "KRW", "KWD", "KYD", "KZT",
+    "LAK", "LBP", "LKR", "LRD", "LSL", "LYD", "MAD", "MDL", "MGA", "MKD", "MMK", "MNT", "MOP",
+    "MRU", "MUR", "MVR", "MWK", "MXN", "MYR", "MZN", "NAD", "NGN", "NIO", "NOK", "NPR", "NZD",
+    "OMR", "PAB", "PEN", "PGK", "PHP", "PKR", "PLN", "PYG", "QAR", "RON", "RSD", "RUB", "RWF",
+    "SAR", "SBD", "SCR", "SDG", "SEK", "SGD", "SHP", "SLE", "SOS", "SRD", "SSP", "STN", "SVC",
+    "SYP", "SZL", "THB", "TJS", "TMT", "TND", "TOP", "TRY", "TTD", "TWD", "TZS", "UAH", "UGX",
+    "USD", "UYU", "UZS", "VES", "VND", "VUV", "WST", "XAF", "XAG", "XAU", "XCD", "XCG", "XDR",
+    "XOF", "XPD", "XPF", "XPT", "YER", "ZAR", "ZMW", "ZWG",
+    "AAVE", "ADA", "ALGO", "APT", "ARB", "ATOM", "AVAX", "AXS", "BCH", "BTC", "CHZ", "CRV", "DOT",
+    "ENA", "ETC", "ETH", "FIL", "HBAR", "ICP", "LINK", "LTC", "MANA", "NEAR", "ONDO", "POL", "SNX",
+    "SOL", "SUI", "UNI", "USDC", "USDT", "XLM", "XRP", "XTZ", "ZEC"
+];
 
 function findCurrency(name, rates) {
     const n = name.trim();
@@ -354,7 +379,7 @@ function findCurrency(name, rates) {
     if (lower in CURRENCY_NAMES)
         return CURRENCY_NAMES[lower];
     const upper = n.toUpperCase();
-    if (/^[A-Z]{3}$/.test(upper) && (KNOWN_CODES.includes(upper) || (rates && rates.rates && (upper in rates.rates || upper === rates.base))))
+    if (/^[A-Z]{3,5}$/.test(upper) && (KNOWN_CODES.includes(upper) || (rates && rates.rates && (upper in rates.rates || upper === rates.base))))
         return upper;
     return null;
 }
@@ -380,7 +405,10 @@ function format(v) {
     return parts.join(".");
 }
 
+// Two decimals, or 4 significant digits for amounts under 1 (crypto, gold).
 function formatMoney(v) {
+    if (v !== 0 && Math.abs(v) < 1)
+        return format(Number(v.toPrecision(4)));
     const s = (Math.round(v * 100) / 100).toFixed(2);
     const parts = s.split(".");
     parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -391,7 +419,7 @@ function formatMoney(v) {
 
 // "<amount> <from> to|in|as|= <to>", amount optional (1), possibly with a
 // currency symbol in front ("$20 to eur", "€5 in ₹").
-const CONVERSION = /^\s*([$€£¥₹₩₽₺₪฿₫₱])?\s*([-+]?[\d.,]*\d(?:e[+-]?\d+)?|[-+]?[\d.,]*\d?)\s*(.*?)\s+(?:to|in|into|as|=|->|→)\s+(.+?)\s*$/i;
+const CONVERSION = /^\s*([$€£¥₹₩₽₺₪฿₫₱₦₴₿])?\s*([-+]?[\d.,]*\d(?:e[+-]?\d+)?|[-+]?[\d.,]*\d?)\s*(.*?)\s+(?:to|in|into|as|=|->|→)\s+(.+?)\s*$/i;
 
 function evaluate(query, rates) {
     const q = String(query || "").trim();
@@ -454,7 +482,10 @@ function convert(amount, fromName, toName, rates) {
         if (!rFrom || !rTo)
             return null;
         const v = amount / rFrom * rTo;
-        return { kind: "currency", value: v, text: `${formatMoney(v)} ${cTo}`, detail: `${formatMoney(amount)} ${cFrom} =`, needsRates: false, date: rates.date || "" };
+        // The older of the two rates' dates (some aren't updated daily).
+        const dates = rates.dates || {};
+        const date = [dates[cFrom], dates[cTo]].filter(d => d).sort()[0] || rates.date || "";
+        return { kind: "currency", value: v, text: `${formatMoney(v)} ${cTo}`, detail: `${formatMoney(amount)} ${cFrom} =`, needsRates: false, date };
     }
     return null;
 }

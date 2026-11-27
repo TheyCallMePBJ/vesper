@@ -16,12 +16,14 @@ Singleton {
     readonly property string usageFile: Settings.stateDir + "/launcher.json"
     readonly property string cacheDir: (Quickshell.env("XDG_CACHE_HOME") || (Quickshell.env("HOME") + "/.cache")) + "/vesper"
     readonly property string ratesFile: cacheDir + "/rates.json"
-    readonly property string ratesUrl: "https://api.frankfurter.dev/v1/latest?base=EUR"
+    // v2 covers ~160 currencies plus metals and crypto (v1 only the ECB's ~30).
+    readonly property string ratesUrl: "https://api.frankfurter.dev/v2/rates?base=EUR"
     readonly property int ratesMaxAge: 12 * 3600 * 1000
 
     // { desktopEntryId: launchCount }
     property var usage: ({})
-    // { base, date, rates: { CODE: rate }, fetched: ms }
+    // { version: 2, base, date (newest), rates: { CODE: rate },
+    //   dates: { CODE: "yyyy-mm-dd" }, fetched: ms }
     property var rates: null
     property bool ratesLoading: false
     property string ratesError: ""
@@ -128,7 +130,7 @@ Singleton {
     // ---- Exchange rates ------------------------------------------------------
 
     function ratesFresh() {
-        return rates !== null && Date.now() - (rates.fetched || 0) < ratesMaxAge;
+        return rates !== null && rates.version === 2 && Date.now() - (rates.fetched || 0) < ratesMaxAge;
     }
 
     function fetchRates() {
@@ -149,10 +151,20 @@ Singleton {
             try {
                 if (code !== 0)
                     throw new Error(ratesErr.text.trim() || `curl exit code ${code}`);
-                const data = JSON.parse(ratesOut.text);
-                if (!data.rates)
+                // A list of { date, base, quote, rate }.
+                const list = JSON.parse(ratesOut.text);
+                if (!Array.isArray(list) || list.length === 0)
                     throw new Error("no rates in reply");
-                root.rates = { base: data.base, date: data.date, rates: data.rates, fetched: Date.now() };
+                const result = { version: 2, base: "EUR", date: "", rates: {}, dates: {}, fetched: Date.now() };
+                for (const r of list) {
+                    if (!r || typeof r.quote !== "string" || !(r.rate > 0))
+                        continue;
+                    result.rates[r.quote] = r.rate;
+                    result.dates[r.quote] = r.date || "";
+                    if (r.date > result.date)
+                        result.date = r.date;
+                }
+                root.rates = result;
                 ratesView.setText(JSON.stringify(root.rates) + "\n");
             } catch (err) {
                 root.ratesError = "Couldn't get exchange rates";
@@ -168,7 +180,8 @@ Singleton {
         onLoaded: {
             try {
                 const data = JSON.parse(text());
-                if (data && data.rates)
+                // Older caches (v1 format) are ignored and fetched again.
+                if (data && data.rates && data.version === 2)
                     root.rates = data;
             } catch (err) {}
         }
