@@ -31,7 +31,7 @@ Singleton {
             component: "Brightness.qml",
             name: "Brightness",
             icon: "brightness-up",
-            description: "Brightness of this screen (backlight or DDC). Scroll to change, click for the control center.",
+            description: "Brightness of this screen (backlight or DDC). Scroll to change, click for sliders for every screen.",
             allowMultiple: false,
             options: [
                 { key: "showPercent", type: "bool", label: "Show percentage", default: false }

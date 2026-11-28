@@ -26,7 +26,7 @@ It deliberately leaves out the rest of a full shell (wallpaper-based colours, th
   | Media | Now playing (MPRIS); play/pause, next, previous |
   | Bluetooth | Status; click for the Bluetooth panel, right click to turn on/off |
   | Network | Wired or Wi-Fi status, with a shield while a VPN is connected; click for the network panel |
-  | Brightness | This screen's brightness (laptop backlight or external monitor over DDC/CI); scroll to change |
+  | Brightness | This screen's brightness (laptop backlight or external monitor over DDC/CI); scroll to change, click for sliders for every screen |
   | System monitor | CPU, memory, temperatures, GPU, disk and network speed |
   | Night light / Keep awake | Click to toggle |
   | Privacy indicator | Shows while apps use the microphone, camera or screen sharing |
@@ -177,7 +177,7 @@ hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("qs -c vesper ipc call brightness
 | `controlCenter` | `toggle`, `open`, `close` |
 | `network` | `toggle`, `open`, `close`, `toggleWifi` |
 | `bluetooth` | `toggle`, `open`, `close`, `togglePower` |
-| `brightness` | `up`, `down`, `set <0-100>`, `get`, `list`, `refresh` (focused monitor) |
+| `brightness` | `up`, `down`, `set <0-100>`, `get`, `list`, `refresh` (focused monitor); `toggle`, `open`, `close` (the panel) |
 | `nightLight` | `toggle`, `enable`, `disable`, `isActive` |
 | `keepAwake` | `toggle`, `enable`, `disable`, `isEnabled` |
 | `notifications` | `toggle`, `open`, `close`, `toggleDnd`, `setDnd <true/false>`, `clear`, `dismissPopups` |

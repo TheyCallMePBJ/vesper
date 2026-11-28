@@ -111,6 +111,11 @@ ShellRoot {
     }
 
     LazyLoader {
+        active: Panels.panel === "brightness"
+        BrightnessPanel {}
+    }
+
+    LazyLoader {
         active: Panels.panel === "tray"
         TrayDrawerPanel {}
     }

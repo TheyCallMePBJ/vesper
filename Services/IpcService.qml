@@ -141,6 +141,10 @@ Scope {
         }
         // Re-read levels from the monitors (after using their own buttons).
         function refresh(): void { BrightnessService.refreshAll(); }
+        // The brightness panel, next to the bar's brightness widget.
+        function toggle(): void { Panels.togglePanel("brightness", null); }
+        function open(): void { Panels.openPanel("brightness", null); }
+        function close(): void { if (Panels.panel === "brightness") Panels.closePanel(); }
     }
 
     IpcHandler {

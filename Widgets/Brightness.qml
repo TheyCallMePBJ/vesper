@@ -4,14 +4,14 @@ import qs.Components
 import qs.Services
 
 // Brightness of the screen this bar is on. Scroll to change it, click for the
-// control center. Hidden if the screen's brightness can't be controlled.
+// brightness panel. Hidden if the screen's brightness can't be controlled.
 BarWidget {
     id: root
 
     readonly property var monitor: BrightnessService.forScreen(screen)
     readonly property real value: monitor ? monitor.value : 0
 
-    panelName: "controlCenter"
+    panelName: "brightness"
     shown: !!monitor && monitor.available
     implicitWidth: shown ? pill.implicitWidth : 0
     implicitHeight: shown ? pill.implicitHeight : 0
